@@ -1,0 +1,90 @@
+/*import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class HotelRoom {
+  final String name;
+  final int capacity;
+  final bool available;
+
+  HotelRoom(
+      {required this.name, required this.capacity, required this.available});
+}
+
+class MyApp extends StatelessWidget {
+  final List<HotelRoom> rooms = [
+    HotelRoom(name: 'Single Room', capacity: 1, available: true),
+    HotelRoom(name: 'Double Room', capacity: 2, available: true),
+    HotelRoom(name: 'Suite', capacity: 4, available: false),
+    // Add more rooms as needed
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Hotel Room Search'),
+        ),
+        body: RoomList(rooms: rooms),
+      ),
+    );
+  }
+}
+
+class RoomList extends StatefulWidget {
+  final List<HotelRoom> rooms;
+
+  RoomList({required this.rooms});
+
+  @override
+  _RoomListState createState() => _RoomListState();
+}
+
+class _RoomListState extends State<RoomList> {
+  int selectedCapacity = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    List<HotelRoom> filteredRooms = widget.rooms
+        .where((room) => room.capacity >= selectedCapacity)
+        .toList();
+
+    return Column(
+      children: [
+        DropdownButton<int>(
+          value: selectedCapacity,
+          onChanged: (value) {
+            setState(() {
+              selectedCapacity = value!;
+            });
+          },
+          items: List.generate(4, (index) {
+            return DropdownMenuItem<int>(
+              value: index + 1,
+              child: Text('${index + 1} person(s)'),
+            );
+          }),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredRooms.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(filteredRooms[index].name),
+                subtitle: Text('Capacity: ${filteredRooms[index].capacity}'),
+                onTap: () {
+                  // Handle room selection
+                  // You can navigate to a detailed view or perform other actions
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+*/
