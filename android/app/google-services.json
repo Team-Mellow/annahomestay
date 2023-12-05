@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "425277120843",
+    "project_id": "annahomestay-ea338",
+    "storage_bucket": "annahomestay-ea338.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425277120843:android:421e70914eeb843bd608ce",
+        "android_client_info": {
+          "package_name": "com.example.annahomestay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2ZTakhcdRWIWYxTZjTa4-u1y6c754Wc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

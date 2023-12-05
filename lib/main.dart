@@ -1,6 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:annahomestay/homepage.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //if (kIsWeb) {
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: "AIzaSyCJd8beOBOV1U5Dnx-S3XwooYVOxY9KSe4",
+          appId: "1:425277120843:web:6d9cbdcc261924acd608ce",
+          messagingSenderId: "425277120843",
+          projectId: "annahomestay-ea338"));
+  //}
   runApp(const MainApp());
 }
 
@@ -9,12 +21,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
+    return const MaterialApp(home: Homepage());
   }
 }
