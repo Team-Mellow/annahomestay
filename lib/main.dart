@@ -11,7 +11,44 @@ class MyApp extends StatelessWidget {
       title: 'Homestay List',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Homestay List'),
+          title: Row(
+            children: [
+              Icon(Icons.home), // Flutter house icon
+              SizedBox(width: 8.0),
+              Text('List of Homestays'),
+              SizedBox(width: 16.0),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'ANNA HOMESTAY',
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: () {
+                print("Book Now button clicked");
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.book),
+                  SizedBox(width: 8.0),
+                  Text('BOOK NOW'),
+                ],
+              ),
+            ),
+          ],
         ),
         body: Center(
           child: Column(
@@ -61,15 +98,20 @@ class HomestayRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: homestays.map((homestay) {
-        return Container(
-          margin: const EdgeInsets.all(8.0),
-          width: 200,
-          height: 100,
-          color: homestay['color'],
-          child: Center(
-            child: Text(
-              homestay['name'],
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        return GestureDetector(
+          onTap: () {
+            print("Homestay ${homestay['name']} clicked");
+          },
+          child: Container(
+            margin: const EdgeInsets.all(8.0),
+            width: 200,
+            height: 100,
+            color: homestay['color'],
+            child: Center(
+              child: Text(
+                homestay['name'],
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         );
