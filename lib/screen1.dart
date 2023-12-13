@@ -1,4 +1,5 @@
 import 'package:annahomestay/profile_screen.dart';
+import 'package:annahomestay/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +129,23 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text(
             "Forget password?",
             style: TextStyle(color: Colors.blue),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              const Text("Don't have an account?"),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const SignUpPage()));
+                  },
+                  child: const Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ))
+            ],
           ),
           const SizedBox(
             height: 88.0,

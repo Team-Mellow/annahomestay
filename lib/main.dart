@@ -1,7 +1,14 @@
+import 'package:annahomestay/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'screen1.dart';
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   Firebase.initializeApp();
+//   runApp(const SignupPage());
+// }
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +30,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(),
+      home: SignUpPage(),
       debugShowCheckedModeBanner: false,
     );
   }
