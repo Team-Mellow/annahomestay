@@ -1,4 +1,4 @@
-import 'package:annahomestay/profile_screen.dart';
+import 'package:annahomestay/mainpage.dart';
 import 'package:annahomestay/screen1.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -119,10 +119,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                 password: _passwordTextController.text)
                             .then((value) {
                           print("Created New Account");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => MyApp()));
                         }).onError((error, StackTrace) {
                           print("Error ${error.toString()}");
                         });
@@ -191,7 +189,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => const HomePage()));
+                                  builder: (context) => const MyApp()));
                         },
                         child: const Text(
                           "Login",
