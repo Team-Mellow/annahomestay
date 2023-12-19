@@ -1,183 +1,264 @@
-import 'package:annahomestay/mainpage.dart';
-import 'package:annahomestay/signup.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() => runApp(const MyApp());
+class House {
+  final String name;
+  final String category;
+  final double price;
+  final int capacity;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  House({
+    required this.name,
+    required this.category,
+    required this.price,
+    required this.capacity,
+  });
+}
+
+class HomestayFilter extends StatefulWidget {
+  const HomestayFilter({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomePage(),
-      debugShowCheckedModeBanner: false,
-    );
+  _HomestayFilterState createState() => _HomestayFilterState();
+}
+
+class _HomestayFilterState extends State<HomestayFilter> {
+  final List<House> houses = [];
+  String filter = '';
+  String selectedCategory = 'All';
+  String sortOrder = 'asc';
+  String sortType = 'price';
+  int? numberOfPeople;
+  List<House> filteredHouses = [];
+
+  Future<void> getHouseData() async {
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('Homestay').get();
+
+    houses.clear();
+
+    snapshot.docs.forEach((document) {
+      final data = document.data() as Map<String, dynamic>;
+      final house = House(
+        name: data['name'] ?? '',
+        category: data['category'] ?? '',
+        price: (data['price'] ?? 0).toDouble(),
+        capacity: data['capacity'] ?? 0,
+      );
+
+      houses.add(house);
+    });
+
+    handleFilter();
   }
-}
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  Future<void> insertHouseData(House house) async {
+    try {
+      final CollectionReference homestayCollection =
+          FirebaseFirestore.instance.collection('Homestay');
+
+      await homestayCollection.add({
+        'name': house.name,
+        'category': house.category,
+        'price': house.price,
+        'capacity': house.capacity,
+      });
+
+      print('House data inserted successfully!');
+    } catch (e) {
+      print('Error inserting house data: $e');
+    }
+  }
+
+  void handleFilter() {
+    filteredHouses = houses.where(
+      (house) =>
+          (selectedCategory == 'All' || house.category == selectedCategory) &&
+          (numberOfPeople == null || house.capacity >= numberOfPeople!),
+    ).toList();
+
+    filteredHouses.sort((a, b) {
+      if (sortType == 'price') {
+        final priceComparison = a.price.compareTo(b.price);
+        return sortOrder == 'asc' ? priceComparison : -priceComparison;
+      }
+      return 0;
+    });
+  }
+
+  void toggleSortOrder() {
+    setState(() {
+      sortOrder = sortOrder == 'asc' ? 'desc' : 'asc';
+    });
+  }
+
+  void handleSortTypeChange(String type) {
+    setState(() {
+      sortType = type;
+    });
+
+    setState(() {
+      sortOrder = 'asc';
+    });
+  }
+
+  void handleSearch() {
+    handleFilter();
+  }
 
   @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
+  void initState() {
+    super.initState();
+    getHouseData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder(
-      future: _initializeFirebase(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return LoginScreen();
-        }
-        return const Center(child: CircularProgressIndicator());
-      },
-    ));
-  }
-}
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
-
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  static Future<User?> loginUsingEmailPassword(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
-    try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      user = userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
-        print("No user found for that email");
-      }
-    }
-    return user;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(
+        title: const Text('Homestay Filter'),
+        backgroundColor: Colors.brown,
+      ),
+      body: Stack(
         children: [
-          const Text(
-            "Anna Homestay",
-            style: TextStyle(
-                color: Color.fromARGB(255, 248, 0, 182),
-                fontSize: 50.0,
-                fontWeight: FontWeight.bold),
-          ),
-          const Text(
-            "Login to your App",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 44.0,
-          ),
-          TextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: "User Email",
-              prefixIcon: Icon(
-                Icons.mail,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 26.0,
-          ),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(
-              hintText: "User Password",
-              prefixIcon: Icon(
-                Icons.lock,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 12.0,
-          ),
-          const Text(
-            "Forget password?",
-            style: TextStyle(color: Colors.blue),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              const Text("Don't have an account?"),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const SignUpPage()));
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                DropdownButton<String>(
+                  value: selectedCategory,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCategory = value!;
+                    });
                   },
-                  child: const Text(
-                    "Sign Up",
-                    style: TextStyle(
-                      color: Colors.blue,
+                  items: ['All', 'Standard', 'Deluxe', 'Landed'].map((category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Filter by number of people',
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      numberOfPeople = value.isNotEmpty ? int.parse(value) : null;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: toggleSortOrder,
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 189, 134, 53),
+                        ),
+                        child: Text('Toggle Price Order ($sortOrder)'),
+                      ),
                     ),
-                  ))
-            ],
-          ),
-          const SizedBox(
-            height: 88.0,
-          ),
-          Container(
-            width: double.infinity,
-            child: RawMaterialButton(
-              fillColor: Color.fromARGB(255, 255, 94, 220),
-              elevation: 0.0,
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0)),
-              onPressed: () async {
-                User? user = await loginUsingEmailPassword(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    context: context);
-                print(user);
-                if (user != null) {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => MainPage()));
-                }
-              },
-              child: const Text(
-                "Login",
-                style: TextStyle(color: Colors.white, fontSize: 18.0),
-              ),
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => handleSortTypeChange('price'),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 189, 134, 53),
+                        ),
+                        child: Text('Price ${sortType == 'price' ? '($sortOrder)' : ''}'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: handleSearch,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.greenAccent,
+                  ),
+                  child: Text('Search'),
+                ),
+                const SizedBox(height: 16.0),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: filteredHouses.length,
+                  itemBuilder: (context, index) {
+                    final house = filteredHouses[index];
+                    return GestureDetector(
+                      onTap: () {
+                        // Handle the onTap action, for example, navigate to a detail screen.
+                        // You can replace this with your desired behavior.
+                        print('Item clicked: ${house.name}');
+                      },
+                      child: Card(
+                        elevation: 3.0,
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ListTile(
+                          title: Text(house.name),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Category: ${house.category}'),
+                              Text('Price: RM${house.price}'),
+                              Text('Capacity: ${house.capacity} person(s)'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Insert a new house data before running the app
+  House newHouse = House(
+    name: 'Indah Home',
+    category: 'Deluxe',
+    price: 150.0,
+    capacity: 6,
+  );
+
+  await insertHouseData(newHouse);
+
+  runApp(MaterialApp(
+    home: HomestayFilter(),
+  ));
+}
+
+Future<void> insertHouseData(House house) async {
+  try {
+    final CollectionReference homestayCollection =
+        FirebaseFirestore.instance.collection('Homestay');
+
+    await homestayCollection.add({
+      'name': house.name,
+      'category': house.category,
+      'price': house.price,
+      'capacity': house.capacity,
+    });
+
+    print('House data inserted successfully!');
+  } catch (e) {
+    print('Error inserting house data: $e');
   }
 }
