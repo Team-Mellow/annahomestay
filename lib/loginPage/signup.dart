@@ -1,5 +1,6 @@
+import 'package:annahomestay/loginPage/login.dart';
 import 'package:annahomestay/mainpage.dart';
-import 'package:annahomestay/screen1.dart';
+import 'package:annahomestay/customer/HomestayFilter.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -189,7 +190,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => const MyApp()));
+                                  builder: (context) => const LoginScreen()));
                         },
                         child: const Text(
                           "Login",

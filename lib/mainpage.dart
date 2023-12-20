@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:annahomestay/mainpage.dart';
-import 'package:annahomestay/signup.dart';
+import 'package:annahomestay/loginPage/signup.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

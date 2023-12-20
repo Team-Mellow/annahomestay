@@ -1,3 +1,4 @@
+import 'package:annahomestay/customer/bookingscreen.dart';
 import 'package:flutter/material.dart';
 
 class ListScreen extends StatelessWidget {
@@ -34,7 +35,9 @@ class ListScreen extends StatelessWidget {
               backgroundColor: Colors.orange[300],
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/booking');
+              MaterialPageRoute route =
+                  MaterialPageRoute(builder: (context) => BookingScreen());
+              Navigator.push(context, route);
             },
             child: Row(
               children: [

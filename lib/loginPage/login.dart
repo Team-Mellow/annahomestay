@@ -1,4 +1,5 @@
-import 'profile_screen.dart';
+import 'package:annahomestay/loginPage/forgot_pass.dart';
+import 'package:annahomestay/customer/listscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
         print("No user found for that email");
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(e.message.toString()),
+              );
+            });
       }
     }
     return user;
@@ -125,9 +133,21 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(
             height: 12.0,
           ),
-          const Text(
-            "Forget password?",
-            style: TextStyle(color: Colors.blue),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ForgotPasswordPage();
+                  },
+                ),
+              );
+            },
+            child: const Text(
+              "Forget password?",
+              style: TextStyle(color: Colors.blue),
+            ),
           ),
           const SizedBox(
             height: 88.0,
@@ -148,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 print(user);
                 if (user != null) {
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => ProfileScreen()));
+                      MaterialPageRoute(builder: (context) => ListScreen()));
                 }
               },
               child: const Text(
