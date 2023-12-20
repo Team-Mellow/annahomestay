@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'listscreen.dart';
-import 'bookingscreen.dart';
 
 class BookingScreen extends StatefulWidget {
   @override
@@ -24,7 +22,13 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Booking Information'),
+        title: Text(
+          'Booking Information',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.indigo[900],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -32,19 +36,54 @@ class _BookingScreenState extends State<BookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+              // Name input with icon
+              Row(
+                children: [
+                  Icon(Icons.person, color: Theme.of(context).primaryColor),
+                  SizedBox(width: 8.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16.0),
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+
+              // Email input with icon
+              Row(
+                children: [
+                  Icon(Icons.email, color: Theme.of(context).primaryColor),
+                  SizedBox(width: 8.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16.0),
-              TextFormField(
-                controller: mobileController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+
+              // Phone Number input with icon
+              Row(
+                children: [
+                  Icon(Icons.phone, color: Theme.of(context).primaryColor),
+                  SizedBox(width: 8.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: mobileController,
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16.0),
 
@@ -62,15 +101,30 @@ class _BookingScreenState extends State<BookingScreen> {
                     'Indah Home',
                     'Dini Pavi'
                   ])
-                    RadioListTile<String>(
-                      title: Text(homestay),
-                      value: homestay,
-                      groupValue: selectedHomestay,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedHomestay = value!;
-                        });
-                      },
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      padding: EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color:
+                            Colors.indigo[100], // Light blue background color
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: RadioListTile<String>(
+                        title: Text(
+                          homestay,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: homestay,
+                        groupValue: selectedHomestay,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedHomestay = value!;
+                          });
+                        },
+                      ),
                     ),
                 ],
               ),
@@ -98,6 +152,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         });
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.indigo[900], // Dark blue background color
+                    ),
                     child: Text('Check-in Date'),
                   ),
                   ElevatedButton(
@@ -114,6 +171,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         });
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.indigo[900], // Dark blue background color
+                    ),
                     child: Text('Check-out Date'),
                   ),
                 ],
@@ -146,6 +206,9 @@ class _BookingScreenState extends State<BookingScreen> {
                     },
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.indigo[900], // Dark blue background color
+                ),
                 child: Text('Next'),
               ),
             ],
