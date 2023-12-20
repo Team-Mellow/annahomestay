@@ -20,3 +20,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+assets:
+  - resources/anna-homestay.jpeg
+  - resources/homestay1.jpg
+  - resources/homestay2.jpg
+  - resources/homestay3.jpg
+  - resources/homestay4.jpg
+  - resources/homestay5.jpg
+  - resources/icon.png
+  - splash.png
