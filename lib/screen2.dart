@@ -9,7 +9,7 @@ class PaymentScreen extends StatefulWidget {
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+  class _PaymentScreenState extends State<PaymentScreen> {
   TextEditingController cardNumberController = TextEditingController();
   DateTime? expiryDate;
   TextEditingController cvvController = TextEditingController();
@@ -20,7 +20,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment UI'),
+        title: Text('Payment'),
+         backgroundColor: Colors.brown,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -37,7 +38,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
               items: CardType.values.map((CardType type) {
                 return DropdownMenuItem<CardType>(
                   value: type,
-                  child: Text(type == CardType.visa ? 'Visa' : 'MasterCard'),
+                  child: Text(
+                    type == CardType.visa ? 'Visa' : 'MasterCard',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 );
               }).toList(),
             ),
@@ -47,6 +51,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Card Number',
+                border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 16.0),
@@ -65,6 +70,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ),
                     decoration: InputDecoration(
                       labelText: 'Expiry Date',
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -75,6 +81,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'CVV',
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -85,6 +92,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               controller: cardHolderNameController,
               decoration: InputDecoration(
                 labelText: 'Cardholder Name',
+                border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 32.0),
@@ -95,8 +103,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
+                padding: EdgeInsets.symmetric(vertical: 16.0),
               ),
-              child: Text('Confirm Payment'),
+              child: Text(
+                'Confirm Payment',
+                style: TextStyle(fontSize: 18.0),
+              ),
             ),
           ],
         ),
@@ -111,7 +123,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Payment Successful'),
-          content: Text('Thank you for your payment with ${selectedCardType == CardType.visa ? 'Visa' : 'MasterCard'}!'),
+          content: Text(
+            'Thank you ${cardHolderNameController.text} for your payment with ${selectedCardType == CardType.visa ? 'Visa' : 'MasterCard'}! ',
+          ),
           actions: [
             TextButton(
               onPressed: () {
