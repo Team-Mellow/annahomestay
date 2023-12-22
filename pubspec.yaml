@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^2.24.2
+  # Add other Firebase dependencies as needed, e.g., firebase_auth
 
 dev_dependencies:
   flutter_test:
