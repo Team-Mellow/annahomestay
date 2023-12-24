@@ -25,6 +25,26 @@ class _BookingScreenState extends State<BookingScreen> {
   DateTime? checkInDate;
   DateTime? checkOutDate;
 
+  Future<void> _saveBookingDataToFirestore() async {
+    try {
+      // Save booking data to Firestore
+      await FirebaseFirestore.instance.collection('bookings').add({
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': mobileController.text,
+        'homestay': selectedHomestay,
+        'checkInDate': checkInDate,
+        'checkOutDate': checkOutDate,
+      });
+
+      // Navigate to ConfirmationScreen
+      Navigator.pushNamed(context, '/confirmation');
+    } catch (error) {
+      print('Error saving booking data: $error');
+      // Handle the error accordingly
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
