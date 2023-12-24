@@ -9,7 +9,10 @@ class ListScreen extends StatelessWidget {
             Colors.indigo[900], // Set the background color to dark blue
         title: Row(
           children: [
-            Icon(Icons.home), // Flutter house icon
+            Icon(
+              Icons.home,
+              color: Colors.white,
+            ), // Flutter house icon
             SizedBox(width: 8.0),
             Text(
               'List of Homestays',
@@ -26,6 +29,7 @@ class ListScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                 ],

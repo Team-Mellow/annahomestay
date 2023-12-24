@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingScreen extends StatefulWidget {
   @override
@@ -10,6 +13,10 @@ String formatDate(DateTime date) {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
+  // Reference to the Firestore collection
+  CollectionReference bookingsCollection =
+      FirebaseFirestore.instance.collection('bookings');
+
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final mobileController = TextEditingController();
@@ -29,6 +36,7 @@ class _BookingScreenState extends State<BookingScreen> {
           ),
         ),
         backgroundColor: Colors.indigo[900],
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -36,7 +44,6 @@ class _BookingScreenState extends State<BookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Name input with icon
               Row(
                 children: [
                   Icon(Icons.person, color: Theme.of(context).primaryColor),
@@ -155,7 +162,10 @@ class _BookingScreenState extends State<BookingScreen> {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.indigo[900], // Dark blue background color
                     ),
-                    child: Text('Check-in Date'),
+                    child: Text(
+                      'Check-in Date',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -174,7 +184,10 @@ class _BookingScreenState extends State<BookingScreen> {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.indigo[900], // Dark blue background color
                     ),
-                    child: Text('Check-out Date'),
+                    child: Text(
+                      'Check-out Date',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -191,7 +204,20 @@ class _BookingScreenState extends State<BookingScreen> {
 
               // "Next" button
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  // Create a map with booking information
+                  Map<String, dynamic> bookingData = {
+                    'name': nameController.text,
+                    'email': emailController.text,
+                    'phone': mobileController.text,
+                    'homestay': selectedHomestay,
+                    'checkInDate': checkInDate,
+                    'checkOutDate': checkOutDate,
+                  };
+
+                  // Add the booking to Firestore
+                  await bookingsCollection.add(bookingData);
+
                   // Navigate to the confirmation page with user input
                   Navigator.pushNamed(
                     context,
@@ -209,7 +235,10 @@ class _BookingScreenState extends State<BookingScreen> {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.indigo[900], // Dark blue background color
                 ),
-                child: Text('Next'),
+                child: Text(
+                  'Next',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

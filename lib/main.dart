@@ -9,9 +9,11 @@ import 'confirmationscreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+      options: FirebaseOptions(
+          apiKey: "AIzaSyCJd8beOBOV1U5Dnx-S3XwooYVOxY9KSe4",
+          appId: "1:425277120843:web:6d9cbdcc261924acd608ce",
+          messagingSenderId: "425277120843",
+          projectId: "annahomestay-ea338"));
   runApp(MyApp());
 }
 

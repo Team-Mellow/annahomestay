@@ -6,6 +6,9 @@ class ConfirmationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Booking Confirmation'),
+        backgroundColor: Colors.indigo[900],
+        iconTheme: IconThemeData(
+            color: Colors.white), // Set the app bar color to dark blue
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -36,15 +39,13 @@ class ConfirmationScreen extends StatelessWidget {
               leading: Icon(Icons.attach_money),
               title: Text('Price: \$500.00'),
             ),
+            Spacer(), // Add Spacer to push buttons to the bottom
           ],
         ),
       ),
-      floatingActionButton: Row(
+      floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(
-            width: 16.0,
-          ),
           ElevatedButton(
             onPressed: () {
               print("Booking Canceled!");
@@ -52,18 +53,21 @@ class ConfirmationScreen extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               primary: Colors.red,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(8.0),
               ),
             ),
             child: Container(
-              width: 70,
+              width: 150.0, // Set a specific width for the button
               child: Center(
-                child: Text('CANCEL'),
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(fontSize: 16.0),
+                ),
               ),
             ),
           ),
           SizedBox(
-            width: 16.0,
+            height: 16.0,
           ),
           ElevatedButton(
             onPressed: () {
@@ -72,13 +76,16 @@ class ConfirmationScreen extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               primary: Colors.green,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(8.0),
               ),
             ),
             child: Container(
-              width: 70,
+              width: 150.0, // Set a specific width for the button
               child: Center(
-                child: Text('CONFIRM'),
+                child: Text(
+                  'CONFIRM',
+                  style: TextStyle(fontSize: 16.0),
+                ),
               ),
             ),
           ),
