@@ -1,6 +1,6 @@
-import 'package:annahomestay/admin/manageProperty_controller.dart';
+import 'package:annahomestay/controller/manageProperty_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:annahomestay/homestay.dart';
+import 'package:annahomestay/models/homestay.dart';
 import 'package:get/get.dart';
 
 class ManageProperty extends StatefulWidget {
@@ -22,8 +22,6 @@ class _ManagePropertyState extends State<ManageProperty> {
         actions: [
           IconButton(
               onPressed: () {
-                final controller = Get.put(HomestayController());
-
                 AlertDialog alertDialog = AlertDialog(
                   title: const Text('Add Homestay'),
                   content: Column(

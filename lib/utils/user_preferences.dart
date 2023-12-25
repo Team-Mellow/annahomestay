@@ -1,4 +1,4 @@
-import 'package:annahomestay/model/user.dart';
+import 'package:annahomestay/models/user.dart';
 
 class UserPreferences {
   static const myUser = User(

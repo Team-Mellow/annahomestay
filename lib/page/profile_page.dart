@@ -1,7 +1,7 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:annahomestay/model/user.dart';
+import 'package:annahomestay/models/user.dart';
 import 'package:annahomestay/page/edit_profile_page.dart';
 import 'package:annahomestay/utils/user_preferences.dart';
 import 'package:annahomestay/widget/appbar_widget.dart';
