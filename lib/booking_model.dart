@@ -14,6 +14,8 @@ class BookingModel {
   late DateTime? checkInDate;
   late DateTime? checkOutDate;
 
+  String? id; // Add this line to include the id property
+
   BookingModel({
     required this.name,
     required this.email,
@@ -21,6 +23,7 @@ class BookingModel {
     required this.homestay,
     required this.checkInDate,
     required this.checkOutDate,
+    this.id,
   });
 
   // Create a factory method to convert a Map to a BookingModel
@@ -32,6 +35,7 @@ class BookingModel {
       homestay: map['homestay'],
       checkInDate: (map['checkInDate'] as Timestamp?)?.toDate(),
       checkOutDate: (map['checkOutDate'] as Timestamp?)?.toDate(),
+      id: map['id'], // Add this line to include the id property
     );
   }
 
@@ -44,6 +48,7 @@ class BookingModel {
       'homestay': homestay,
       'checkInDate': checkInDate,
       'checkOutDate': checkOutDate,
+      'id': id, // Add this line to include the id property
     };
   }
 }

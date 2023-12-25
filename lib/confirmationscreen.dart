@@ -52,8 +52,37 @@ class ConfirmationScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                          onPressed: () {
-                            print("Booking Canceled!");
+                          onPressed: () async {
+                            // Show a confirmation dialog
+                            bool confirm = await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Confirm Cancellation"),
+                                content: Text(
+                                    "Are you sure you want to cancel this booking?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: Text("No"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: Text("Yes"),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            // If the user confirms, delete the booking
+                            if (confirm == true) {
+                              await _bookingRepository
+                                  .deleteBooking(latestBooking.id!);
+
+                              // Close the confirmation screen
+                              Navigator.of(context).pop();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.red,
@@ -66,7 +95,8 @@ class ConfirmationScreen extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 'CANCEL',
-                                style: TextStyle(fontSize: 16.0),
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.white),
                               ),
                             ),
                           ),
@@ -76,7 +106,7 @@ class ConfirmationScreen extends StatelessWidget {
                             print("Booking Confirmed!");
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
+                            primary: Colors.indigo[900],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -86,7 +116,8 @@ class ConfirmationScreen extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 'CONFIRM',
-                                style: TextStyle(fontSize: 16.0),
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.orange[200]),
                               ),
                             ),
                           ),
@@ -105,15 +136,27 @@ class ConfirmationScreen extends StatelessWidget {
   }
 
   Widget buildInfoTile(String title, String value, IconData icon) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.indigo[100], // Light blue background color
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      subtitle: Text(value),
-      leading: Icon(icon),
+      child: ListTile(
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0, // Adjust the font size here
+          ),
+        ),
+        subtitle: Text(
+          value,
+          style: TextStyle(fontSize: 16.0), // Adjust the font size here
+        ),
+        leading: Icon(icon),
+      ),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'homestay_repository.dart';
 
 class ListScreen extends StatelessWidget {
+  final HomestayRepository _homestayRepository = HomestayRepository.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
