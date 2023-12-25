@@ -1,6 +1,6 @@
 import 'package:annahomestay/admin/generate_report.dart';
 import 'package:annahomestay/admin/manage_property.dart';
-import 'package:annahomestay/admin/manage_reservation.dart';
+import 'package:annahomestay/admin/manage_booking.dart';
 import 'package:annahomestay/admin/message_guest.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Dashboard'),
+        title: Text(
+          'Admin Dashboard',
+        ),
+        backgroundColor: Colors.deepPurple[200],
+        elevation: 0,
       ),
       body: Center(
         child: Column(
@@ -43,9 +47,22 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Navigator.push(context, route);
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(100, 100), // Set the desired size
+                        fixedSize: Size(200, 200),
+                        backgroundColor: Colors.deepPurple[200],
+                        elevation: 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          '../lib/photos/addHouseIcon.png',
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(height: 8.0),
+                        Text('Manage Property Listings'),
+                      ],
                     ),
-                    child: Text('Manage Property Listings'),
                   ),
                 ),
 
@@ -55,13 +72,27 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   child: ElevatedButton(
                     onPressed: () {
                       MaterialPageRoute route = MaterialPageRoute(
-                          builder: (context) => ManageReservation());
+                          builder: (context) => ManageBooking());
                       Navigator.push(context, route);
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(100, 100), // Set the desired size
+                      fixedSize: Size(200, 200),
+                      backgroundColor:
+                          Colors.deepPurple[200], // Set the desired size
                     ),
-                    child: Text('Manage Reservations'),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          '../lib/photos/key.png',
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(height: 8.0),
+                        Text('Manage Customer Booking'),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -79,7 +110,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Navigator.push(context, route);
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(100, 100), // Set the desired size
+                      fixedSize: Size(200, 200), // Set the desired size
                     ),
                     child: Text('Message with Guests'),
                   ),
@@ -95,7 +126,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Navigator.push(context, route);
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(100, 100), // Set the desired size
+                      fixedSize: Size(200, 200), // Set the desired size
                     ),
                     child: Text('Generate Reports'),
                   ),

@@ -1,3 +1,4 @@
+import 'package:annahomestay/admin/dashboard.dart';
 import 'package:annahomestay/loginPage/signup.dart';
 import 'package:annahomestay/loginPage/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +32,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(), //nanti tukar balik jadi SignUpPage()
+      home: AdminDashboard(), //nanti tukar balik jadi SignUpPage()
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,4 +1,7 @@
+import 'package:annahomestay/admin/manageProperty_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:annahomestay/homestay.dart';
+import 'package:get/get.dart';
 
 class ManageProperty extends StatefulWidget {
   const ManageProperty({Key? key}) : super(key: key);
@@ -8,102 +11,169 @@ class ManageProperty extends StatefulWidget {
 }
 
 class _ManagePropertyState extends State<ManageProperty> {
-  // Dummy data for homestay listings
-  List<HomestayListing> homestayListings = [
-    HomestayListing(
-      title: 'Cozy Cottage',
-      location: 'Mountain View, CA',
-      price: '\$120/night',
-      imageUrl: 'assets/cozy_cottage.jpg',
-    ),
-    HomestayListing(
-      title: 'Beachfront Paradise',
-      location: 'Malibu, CA',
-      price: '\$200/night',
-      imageUrl: 'assets/beachfront_paradise.jpg',
-    ),
-    HomestayListing(
-      title: 'Urban Retreat',
-      location: 'New York, NY',
-      price: '\$180/night',
-      imageUrl: 'assets/urban_retreat.jpg',
-    ),
-    HomestayListing(
-      title: 'Rustic Cabin',
-      location: 'Aspen, CO',
-      price: '\$150/night',
-      imageUrl: 'assets/rustic_cabin.jpg',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomestayController());
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Property'),
-      ),
-      body: ListView.builder(
-        itemCount: homestayListings.length,
-        itemBuilder: (context, index) {
-          return HomestayCard(homestay: homestayListings[index]);
-        },
-      ),
-    );
-  }
-}
+        title: const Text('Manage Property'),
+        backgroundColor: Colors.deepPurple[200],
+        elevation: 0,
+        actions: [
+          IconButton(
+              onPressed: () {
+                final controller = Get.put(HomestayController());
 
-class HomestayListing {
-  final String title;
-  final String location;
-  final String price;
-  final String imageUrl;
-
-  HomestayListing({
-    required this.title,
-    required this.location,
-    required this.price,
-    required this.imageUrl,
-  });
-}
-
-class HomestayCard extends StatelessWidget {
-  final HomestayListing homestay;
-
-  const HomestayCard({Key? key, required this.homestay}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(
-            homestay.imageUrl,
-            width: double.infinity,
-            height: 200,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  homestay.title,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+                AlertDialog alertDialog = AlertDialog(
+                  title: const Text('Add Homestay'),
+                  content: Column(
+                    children: [
+                      TextField(
+                        controller: controller.name,
+                        decoration:
+                            const InputDecoration(labelText: 'House Name'),
+                      ),
+                      TextField(
+                        controller: controller.capacity,
+                        decoration:
+                            const InputDecoration(labelText: 'Capacity'),
+                      ),
+                      TextField(
+                        controller: controller.category,
+                        decoration:
+                            const InputDecoration(labelText: 'Category'),
+                      ),
+                      TextField(
+                        controller: controller.price,
+                        decoration: const InputDecoration(labelText: 'Price'),
+                      ),
+                      TextField(
+                        controller: controller.imageUrl,
+                        decoration:
+                            const InputDecoration(labelText: 'Image URL'),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(height: 8.0),
-                Text(homestay.location),
-                SizedBox(height: 8.0),
-                Text(homestay.price),
-              ],
-            ),
-          ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Validate and add homestay to the list
+                        if (controller.name.text.isNotEmpty &&
+                            controller.capacity.text.isNotEmpty &&
+                            controller.category.text.isNotEmpty &&
+                            controller.price.text.isNotEmpty &&
+                            controller.imageUrl.text.isNotEmpty) {
+                          setState(() {
+                            final homestay = Homestay(
+                                houseName: controller.name.text.trim(),
+                                category: controller.category.text.trim(),
+                                capacity: int.parse(controller.capacity.text),
+                                price: double.parse(controller.price.text),
+                                imageUrl: controller.imageUrl.text.trim());
+
+                            HomestayController.instance
+                                .createHomestay(homestay);
+                          });
+                          Navigator.pop(context); // Close the dialog
+                        }
+                      },
+                      child: const Text('Add'),
+                    ),
+                  ],
+                );
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return alertDialog;
+                    });
+              },
+              icon: Icon(Icons.add)),
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          child: FutureBuilder<List<Homestay>>(
+              future: controller.getAllHomestayDetails(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  //Homestay homestayData = snapshot.data as Homestay;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (c, index) {
+                      return SizedBox(
+                        width: 100,
+                        child: Card(
+                          margin: const EdgeInsets.all(20),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              //mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  snapshot.data![index].imageUrl,
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        snapshot.data![index].houseName,
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text('Capacity: ' +
+                                          snapshot.data![index].capacity
+                                              .toString()),
+                                      SizedBox(height: 8.0),
+                                      Text('Price: RM' +
+                                          snapshot.data![index].price
+                                              .toString()),
+                                      SizedBox(height: 8.0),
+                                      TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            final homestay =
+                                                snapshot.data![index];
+                                            controller.removeHomestay(homestay);
+                                          });
+                                        },
+                                        child: Text(
+                                          'Remove',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                          //textAlign: TextAlign.end,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ]),
+                        ),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text(snapshot.error.toString()));
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
+        ),
       ),
     );
   }
