@@ -5,6 +5,8 @@ import 'firebase_options.dart';
 import 'listscreen.dart';
 import 'bookingscreen.dart';
 import 'confirmationscreen.dart';
+import 'package:get/get.dart';
+import 'booking_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,7 @@ void main() async {
           appId: "1:425277120843:web:6d9cbdcc261924acd608ce",
           messagingSenderId: "425277120843",
           projectId: "annahomestay-ea338"));
+  Get.put(BookingRepository()); // Initialize BookingRepository as a singleton
   runApp(MyApp());
 }
 

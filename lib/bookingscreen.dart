@@ -35,6 +35,7 @@ class _BookingScreenState extends State<BookingScreen> {
         'homestay': selectedHomestay,
         'checkInDate': checkInDate,
         'checkOutDate': checkOutDate,
+        'timestamp': FieldValue.serverTimestamp(), // Add this line
       });
 
       // Navigate to ConfirmationScreen
@@ -225,6 +226,15 @@ class _BookingScreenState extends State<BookingScreen> {
               // "Next" button
               ElevatedButton(
                 onPressed: () async {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  );
+
                   // Create a map with booking information
                   Map<String, dynamic> bookingData = {
                     'name': nameController.text,
@@ -237,6 +247,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
                   // Add the booking to Firestore
                   await bookingsCollection.add(bookingData);
+
+                  // Dismiss the loading indicator
+                  Navigator.pop(context);
 
                   // Navigate to the confirmation page with user input
                   Navigator.pushNamed(
