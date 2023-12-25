@@ -1,3 +1,4 @@
+import 'package:annahomestay/login.dart';
 import 'package:annahomestay/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -30,7 +31,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: MainPage(), //nanti tukar balik jadi SignUpPage()
+      home: HomePage(), //nanti tukar balik jadi SignUpPage()
       debugShowCheckedModeBanner: false,
     );
   }

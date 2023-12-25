@@ -148,6 +148,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   ))
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              const Text("Or"),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const SignUpPage()));
+                  },
+                  child: const Text(
+                    "Login as admin",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ))
+            ],
+          ),
           const SizedBox(
             height: 88.0,
           ),
@@ -166,8 +183,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     context: context);
                 print(user);
                 if (user != null) {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => MainPage()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) =>
+                          MainPage())); //tukar path pergi admin dashboard ama
                 }
               },
               child: const Text(
