@@ -1,0 +1,119 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class ConfirmationScreen extends StatelessWidget {
+  final String bookingId;
+
+  ConfirmationScreen({required this.bookingId});
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference bookingsCollection =
+        FirebaseFirestore.instance.collection('bookings');
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Booking Confirmation'),
+        backgroundColor: Colors.indigo[900],
+        iconTheme: IconThemeData(
+            color: Colors.white), // Set the app bar color to dark blue
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<DocumentSnapshot>(
+          future: bookingsCollection.doc(bookingId).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (!snapshot.hasData || !snapshot.data!.exists) {
+              return Text('Booking not found');
+            }
+
+            var data = snapshot.data!.data() as Map<String, dynamic>;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text('Name: ${data['name']}'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.phone),
+                  title: Text('Phone Number: ${data['phone']}'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.email),
+                  title: Text('Email: ${data['email']}'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Homestay Chosen: ${data['homestay']}'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.calendar_today),
+                  title: Text('Date Check-in: ${data['checkInDate']}'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.calendar_today),
+                  title: Text('Date Check-out: ${data['checkOutDate']}'),
+                ),
+                Spacer(),
+              ],
+            );
+          },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              print("Booking Canceled!");
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: Container(
+              width: 150.0,
+              child: Center(
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 16.0,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              print("Booking Confirmed!");
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.green,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: Container(
+              width: 150.0,
+              child: Center(
+                child: Text(
+                  'CONFIRM',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
