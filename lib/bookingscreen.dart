@@ -203,49 +203,25 @@ class _BookingScreenState extends State<BookingScreen> {
                     SizedBox(height: 16.0),
 
                     // Calendar display with availability status
-                    Text(
-                      'Calendar:',
-                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8.0),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Table(
-                        children: [
-                          TableRow(
-                            children: [
-                              buildTableCell('Sun'),
-                              buildTableCell('Mon'),
-                              buildTableCell('Tue'),
-                              buildTableCell('Wed'),
-                              buildTableCell('Thu'),
-                              buildTableCell('Fri'),
-                              buildTableCell('Sat'),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              // Add empty cells for weekdays before the selected check-in date
-                              for (int i = 0; checkInDate != null && i < checkInDate!.weekday - 1; i++)
-                                buildEmptyTableCell(),
-                              // Build cells for the date range
-                              for (int i = 0; checkInDate != null && checkOutDate != null && i <= checkOutDate!.difference(checkInDate!).inDays; i++)
-  buildDateCell(checkInDate!.add(Duration(days: i))),
-                              //for (int i = 0; checkInDate != null && checkOutDate != null && i <= checkOutDate!.difference(checkInDate!).inDays; i++)
-                              //  await buildDateCell(checkInDate!.add(Duration(days: i))),
-                              // Add empty cells for remaining weekdays
-                              for (int i = checkOutDate?.weekday ?? 0; i < 7; i++)
-                                buildEmptyTableCell(),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    buildCalendarDisplay(),
                   ],
                 ),
+
+              SizedBox(height: 16.0),
+
+              // "Check Availability" button
+              ElevatedButton(
+                onPressed: () async {
+                  await checkAvailability(); // Check availability when the button is pressed
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.indigo[900], // Dark blue background color
+                ),
+                child: Text(
+                  'Check Availability',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
 
               SizedBox(height: 16.0),
 
@@ -299,31 +275,118 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  Future<void> checkAvailability() async {
-    if (selectedHomestay.isNotEmpty && checkInDate != null) {
-      final availabilitySnapshot = await availabilityCollection
-          .doc(selectedHomestay)
-          .collection(formatDate(checkInDate!))
-          .doc('availability')
-          .get();
-
-      setState(() {
-        isAvailable = availabilitySnapshot.exists ? availabilitySnapshot['available'] ?? false : false;
-      });
-    }
+  Widget buildCalendarDisplay() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Calendar:',
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8.0),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Table(
+            children: [
+              TableRow(
+                children: [
+                  for (int i = 0; i < 7; i++) buildTableCell(getDayAbbreviation(i + 1)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildDateCell(checkInDate!.add(Duration(days: i - checkInDate!.weekday))),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildDateCell(checkInDate!.add(Duration(days: 7 + i - checkInDate!.weekday))),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildDateCell(checkInDate!.add(Duration(days: 14 + i - checkInDate!.weekday))),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
-  Future<void> updateAvailability() async {
-    if (selectedHomestay.isNotEmpty && checkInDate != null) {
-      await availabilityCollection
-          .doc(selectedHomestay)
-          .collection(formatDate(checkInDate!))
-          .doc('availability')
-          .set({'available': false});
-    }
+  Widget buildTableCell(String day) {
+    return TableCell(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        color: Colors.grey,
+        child: Text(
+          day,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
   }
 
-  // Function to build an empty TableCell
   Widget buildEmptyTableCell() {
     return TableCell(
       child: Container(
@@ -338,7 +401,6 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // Function to build a TableCell for a given date
   Widget buildDateCell(DateTime date) {
     return TableCell(
       child: GestureDetector(
@@ -366,9 +428,29 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // Function to check if a date is available
+  String getDayAbbreviation(int day) {
+    switch (day) {
+      case 1:
+        return 'Sun';
+      case 2:
+        return 'Mon';
+      case 3:
+        return 'Tue';
+      case 4:
+        return 'Wed';
+      case 5:
+        return 'Thu';
+      case 6:
+        return 'Fri';
+      case 7:
+        return 'Sat';
+      default:
+        return '';
+    }
+  }
+
   Future<bool> isDateAvailable(DateTime date) async {
-    if (selectedHomestay.isNotEmpty && date != false ) {
+    if (selectedHomestay.isNotEmpty && date != false) {
       final availabilitySnapshot = await availabilityCollection
           .doc(selectedHomestay)
           .collection(formatDate(date))
@@ -393,18 +475,27 @@ class _BookingScreenState extends State<BookingScreen> {
     return true;
   }
 
-  // Function to build a TableCell for weekdays
-  Widget buildTableCell(String day) {
-    return TableCell(
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        color: Colors.grey,
-        child: Text(
-          day,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+  Future<void> checkAvailability() async {
+    if (selectedHomestay.isNotEmpty && checkInDate != null) {
+      final availabilitySnapshot = await availabilityCollection
+          .doc(selectedHomestay)
+          .collection(formatDate(checkInDate!))
+          .doc('availability')
+          .get();
+
+      setState(() {
+        isAvailable = availabilitySnapshot.exists ? availabilitySnapshot['available'] ?? false : false;
+      });
+    }
+  }
+
+  Future<void> updateAvailability() async {
+    if (selectedHomestay.isNotEmpty && checkInDate != null) {
+      await availabilityCollection
+          .doc(selectedHomestay)
+          .collection(formatDate(checkInDate!))
+          .doc('availability')
+          .set({'available': false});
+    }
   }
 }
