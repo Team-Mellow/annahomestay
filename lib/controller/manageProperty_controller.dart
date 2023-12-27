@@ -30,4 +30,13 @@ class HomestayController extends GetxController {
       throw 'Something went wrong';
     }
   }
+
+  Future<void> updateHomestay(Homestay homestayId) async {
+    try {
+      await homestayRepo.updateHomestay(homestayId);
+      update();
+    } catch (e) {
+      throw 'Something went wrong';
+    }
+  }
 }

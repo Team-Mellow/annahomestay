@@ -141,21 +141,174 @@ class _ManagePropertyState extends State<ManageProperty> {
                                           snapshot.data![index].price
                                               .toString()),
                                       SizedBox(height: 8.0),
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            final homestay =
-                                                snapshot.data![index];
-                                            controller.removeHomestay(homestay);
-                                          });
-                                        },
-                                        child: Text(
-                                          'Remove',
-                                          style: TextStyle(
-                                            color: Colors.red,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              // setState(() {
+                                              //   final homestay =
+                                              //       snapshot.data![index];
+                                              //   controller
+                                              //       .removeHomestay(homestay);
+                                              // });
+                                              AlertDialog alertDialog =
+                                                  AlertDialog(
+                                                title:
+                                                    const Text('Edit Homestay'),
+                                                content: Column(
+                                                  children: [
+                                                    TextField(
+                                                      controller:
+                                                          TextEditingController(
+                                                              text: snapshot
+                                                                  .data![index]
+                                                                  .houseName),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  'House Name'),
+                                                    ),
+                                                    TextField(
+                                                      controller:
+                                                          TextEditingController(
+                                                              text: snapshot
+                                                                  .data![index]
+                                                                  .capacity
+                                                                  .toString()),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  'Capacity'),
+                                                    ),
+                                                    TextField(
+                                                      controller:
+                                                          TextEditingController(
+                                                              text: snapshot
+                                                                  .data![index]
+                                                                  .category),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  'Category'),
+                                                    ),
+                                                    TextField(
+                                                      controller:
+                                                          TextEditingController(
+                                                              text: snapshot
+                                                                  .data![index]
+                                                                  .price
+                                                                  .toString()),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  'Price'),
+                                                    ),
+                                                    TextField(
+                                                      controller:
+                                                          TextEditingController(
+                                                              text: snapshot
+                                                                  .data![index]
+                                                                  .imageUrl),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  'Image URL'),
+                                                    ),
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context); // Close the dialog
+                                                    },
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      // Validate and update homestay in the list
+                                                      if (controller.name
+                                                              .text.isNotEmpty &&
+                                                          controller.capacity.text
+                                                              .isNotEmpty &&
+                                                          controller.category.text
+                                                              .isNotEmpty &&
+                                                          controller.price.text
+                                                              .isNotEmpty &&
+                                                          controller
+                                                              .imageUrl
+                                                              .text
+                                                              .isNotEmpty) {
+                                                        setState(() {
+                                                          final homestay =
+                                                              Homestay(
+                                                            houseName:
+                                                                controller
+                                                                    .name.text
+                                                                    .trim(),
+                                                            category: controller
+                                                                .category.text
+                                                                .trim(),
+                                                            capacity: int.parse(
+                                                                controller
+                                                                    .capacity
+                                                                    .text),
+                                                            price: double.parse(
+                                                                controller.price
+                                                                    .text),
+                                                            imageUrl: controller
+                                                                .imageUrl.text
+                                                                .trim(),
+                                                          );
+
+                                                          // Assuming you have a method to update homestay in the controller
+                                                          controller
+                                                              .updateHomestay(
+                                                                  homestay);
+                                                        });
+                                                        Navigator.pop(
+                                                            context); // Close the dialog
+                                                      }
+                                                    },
+                                                    child: const Text('Update'),
+                                                  ),
+                                                ],
+                                              );
+
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return alertDialog;
+                                                  });
+                                            },
+                                            child: Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                              ),
+                                              //textAlign: TextAlign.end,
+                                            ),
                                           ),
-                                          //textAlign: TextAlign.end,
-                                        ),
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                final homestay =
+                                                    snapshot.data![index];
+                                                controller
+                                                    .removeHomestay(homestay);
+                                              });
+                                            },
+                                            child: Text(
+                                              'Remove',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                              //textAlign: TextAlign.end,
+                                            ),
+                                          ),
+                                        ],
                                       )
                                     ],
                                   ),
