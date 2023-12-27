@@ -1,4 +1,4 @@
-import 'package:annahomestay/homestay.dart';
+import 'package:annahomestay/models/homestay.dart';
 import 'package:annahomestay/repository/homestay_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +25,15 @@ class HomestayController extends GetxController {
   Future<void> removeHomestay(Homestay homestayId) async {
     try {
       await homestayRepo.removeHomestay(homestayId);
+      update();
+    } catch (e) {
+      throw 'Something went wrong';
+    }
+  }
+
+  Future<void> updateHomestay(Homestay homestayId) async {
+    try {
+      await homestayRepo.updateHomestay(homestayId);
       update();
     } catch (e) {
       throw 'Something went wrong';

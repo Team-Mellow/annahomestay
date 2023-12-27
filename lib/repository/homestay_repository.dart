@@ -1,4 +1,4 @@
-import 'package:annahomestay/homestay.dart';
+import 'package:annahomestay/models/homestay.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,32 +41,34 @@ class HomestayRepository extends GetxController {
   }
 
 //update homestay details
-  Future<void> updateHomestayDetails(Homestay updateHomestay) async {
+  // Future<void> updateHomestayDetails(Homestay updateHomestay) async {
+  //   try {
+  //     await _db
+  //         .collection('Homestay2')
+  //         .doc(updateHomestay.id)
+  //         .update(updateHomestay.toJson());
+  //   } on FirebaseException catch (e) {
+  //     throw e.toString();
+  //   } catch (e) {
+  //     throw 'Something went wrong.';
+  //   }
+  // }
+  Future<void> updateHomestay(Homestay updatedHomestay) async {
     try {
-      await _db
-          .collection('Homestay2')
-          .doc(updateHomestay.id)
-          .update(updateHomestay.toJson());
+      await _db.collection('Homestay2').doc(updatedHomestay.id).update(
+            updatedHomestay.toJson(),
+          );
     } on FirebaseException catch (e) {
-      throw e.toString();
+      throw e.message ?? 'Something went wrong.';
     } catch (e) {
       throw 'Something went wrong.';
     }
   }
 
   //update any field in homestay
-  Future<void> updateSingleHomestay(Map<String, dynamic> json) async {
-    try {
-      await _db.collection('Homestay2').doc().update(json);
-    } catch (e) {
-      throw 'Something went wrong';
-    }
-  }
-
-  // //remove homestay in FireStore
-  // Future<void> removeHomestay(String houseId) async {
+  // Future<void> updateSingleHomestay(Map<String, dynamic> json) async {
   //   try {
-  //     await _db.collection('Homestay2').doc(houseId).delete();
+  //     await _db.collection('Homestay2').doc().update(json);
   //   } catch (e) {
   //     throw 'Something went wrong';
   //   }
