@@ -1,9 +1,9 @@
-import 'package:annahomestay/loginPage/login.dart';
 import 'package:annahomestay/mainpage.dart';
-import 'package:annahomestay/customer/HomestayFilter.dart';
+import 'package:annahomestay/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -154,21 +154,23 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ],
                   ),
-                  child: TextButton(
-                    onPressed: () {},
+                  child: ElevatedButton(
+                    onPressed: () {
+                      signInWithGoogle();
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           height: 30.0,
                           width: 30.0,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/login_signup/google.png'),
-                                fit: BoxFit.cover),
-                            shape: BoxShape.circle,
-                          ),
+                          // decoration: const BoxDecoration(
+                          //   image: DecorationImage(
+                          //       image: AssetImage(
+                          //           'assets/images/login_signup/google.png'),
+                          //       fit: BoxFit.cover),
+                          //   shape: BoxShape.circle,
+                          // ),
                         ),
                         const SizedBox(width: 18),
                         const Text(
@@ -190,7 +192,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()));
+                                  builder: (context) => const MyApp()));
                         },
                         child: const Text(
                           "Login",
@@ -207,4 +209,45 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
+  signInWithGoogle() async {
+    try {
+      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        // User canceled the sign-in process
+        return;
+      }
+
+      GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
+
+      AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      print("Signed in with Google: ${userCredential.user?.displayName}");
+
+      // Navigate to the next screen or perform other actions after successful sign-in
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp()),
+      );
+    } catch (e) {
+      print("Error signing in with Google: $e");
+      // Handle the error (show a message to the user, etc.)
+    }
+  }
+
+//   signInWithGoogle() async {
+//     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+//     GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+//     AuthCredential credential = GoogleAuthProvider.credential(
+//         accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+//     UserCredential userCredential =
+//         await FirebaseAuth.instance.signInWithCredential(credential);
+//     print(userCredential.user?.displayName);
+//   }
 }
