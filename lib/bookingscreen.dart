@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingScreen extends StatefulWidget {
   @override
@@ -13,9 +11,8 @@ String formatDate(DateTime date) {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  // Reference to the Firestore collection
-  CollectionReference bookingsCollection =
-      FirebaseFirestore.instance.collection('bookings');
+  CollectionReference bookingsCollection = FirebaseFirestore.instance.collection('bookings');
+  CollectionReference availabilityCollection = FirebaseFirestore.instance.collection('homestay_availability');
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -24,27 +21,7 @@ class _BookingScreenState extends State<BookingScreen> {
   String selectedHomestay = '';
   DateTime? checkInDate;
   DateTime? checkOutDate;
-
-  Future<void> _saveBookingDataToFirestore() async {
-    try {
-      // Save booking data to Firestore
-      await FirebaseFirestore.instance.collection('bookings').add({
-        'name': nameController.text,
-        'email': emailController.text,
-        'phone': mobileController.text,
-        'homestay': selectedHomestay,
-        'checkInDate': checkInDate,
-        'checkOutDate': checkOutDate,
-        'timestamp': FieldValue.serverTimestamp(), // Add this line
-      });
-
-      // Navigate to ConfirmationScreen
-      Navigator.pushNamed(context, '/confirmation');
-    } catch (error) {
-      print('Error saving booking data: $error');
-      // Handle the error accordingly
-    }
-  }
+  bool isAvailable = true;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +42,7 @@ class _BookingScreenState extends State<BookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Name input with icon
               Row(
                 children: [
                   Icon(Icons.person, color: Theme.of(context).primaryColor),
@@ -133,8 +111,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       padding: EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
-                        color:
-                            Colors.indigo[100], // Light blue background color
+                        color: Colors.indigo[100], // Light blue background color
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: RadioListTile<String>(
@@ -216,55 +193,73 @@ class _BookingScreenState extends State<BookingScreen> {
 
               // Selected dates display
               if (checkInDate != null && checkOutDate != null)
-                Text(
-                  'Selected Dates: Check-in - ${formatDate(checkInDate!)} | Check-out - ${formatDate(checkOutDate!)}',
-                  style: TextStyle(fontSize: 16.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Selected Dates: Check-in - ${formatDate(checkInDate!)} | Check-out - ${formatDate(checkOutDate!)}',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    SizedBox(height: 16.0),
+
+                    // Calendar display with availability status
+                    buildCalendarDisplay(),
+                  ],
                 ),
+
+              SizedBox(height: 16.0),
+
+              // "Check Availability" button
+              ElevatedButton(
+                onPressed: () async {
+                  await checkAvailability(); // Check availability when the button is pressed
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.indigo[900], // Dark blue background color
+                ),
+                child: Text(
+                  'Check Availability',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
 
               SizedBox(height: 16.0),
 
               // "Next" button
               ElevatedButton(
-                onPressed: () async {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  );
+                onPressed: isAvailable
+                    ? () async {
+                        // Create a map with booking information
+                        Map<String, dynamic> bookingData = {
+                          'name': nameController.text,
+                          'email': emailController.text,
+                          'phone': mobileController.text,
+                          'homestay': selectedHomestay,
+                          'checkInDate': checkInDate,
+                          'checkOutDate': checkOutDate,
+                        };
 
-                  // Create a map with booking information
-                  Map<String, dynamic> bookingData = {
-                    'name': nameController.text,
-                    'email': emailController.text,
-                    'phone': mobileController.text,
-                    'homestay': selectedHomestay,
-                    'checkInDate': checkInDate,
-                    'checkOutDate': checkOutDate,
-                  };
+                        // Add the booking to Firestore
+                        await bookingsCollection.add(bookingData);
 
-                  // Add the booking to Firestore
-                  await bookingsCollection.add(bookingData);
+                        // Update availability in Firestore
+                        await updateAvailability();
 
-                  // Dismiss the loading indicator
-                  Navigator.pop(context);
-
-                  // Navigate to the confirmation page with user input
-                  Navigator.pushNamed(
-                    context,
-                    '/confirmation',
-                    arguments: {
-                      'name': nameController.text,
-                      'email': emailController.text,
-                      'phone': mobileController.text,
-                      'homestay': selectedHomestay,
-                      'checkInDate': checkInDate,
-                      'checkOutDate': checkOutDate,
-                    },
-                  );
-                },
+                        // Navigate to the confirmation page with user input
+                        Navigator.pushNamed(
+                          context,
+                          '/confirmation',
+                          arguments: {
+                            'name': nameController.text,
+                            'email': emailController.text,
+                            'phone': mobileController.text,
+                            'homestay': selectedHomestay,
+                            'checkInDate': checkInDate,
+                            'checkOutDate': checkOutDate,
+                          },
+                        );
+                      }
+                    : null, // Disable the button if not available
                 style: ElevatedButton.styleFrom(
                   primary: Colors.indigo[900], // Dark blue background color
                 ),
@@ -278,5 +273,229 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
       ),
     );
+  }
+
+  Widget buildCalendarDisplay() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Calendar:',
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8.0),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Table(
+            children: [
+              TableRow(
+                children: [
+                  for (int i = 0; i < 7; i++) buildTableCell(getDayAbbreviation(i + 1)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildEmptyTableCell(),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildDateCell(checkInDate!.add(Duration(days: i - checkInDate!.weekday))),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildDateCell(checkInDate!.add(Duration(days: 7 + i - checkInDate!.weekday))),
+                ],
+              ),
+              TableRow(
+                children: [
+                  for (int i = 1; i <= 7; i++) buildDateCell(checkInDate!.add(Duration(days: 14 + i - checkInDate!.weekday))),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildTableCell(String day) {
+    return TableCell(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        color: Colors.grey,
+        child: Text(
+          day,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget buildEmptyTableCell() {
+    return TableCell(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        color: Colors.grey,
+        child: Text(
+          '',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDateCell(DateTime date) {
+    return TableCell(
+      child: GestureDetector(
+        onTap: () async {
+          bool isAvailable = await isDateAvailable(date);
+          if (!isAvailable) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('This date is unavailable for booking.'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          color: Colors.green, // Adjust the color as needed
+          child: Text(
+            date.day.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String getDayAbbreviation(int day) {
+    switch (day) {
+      case 1:
+        return 'Sun';
+      case 2:
+        return 'Mon';
+      case 3:
+        return 'Tue';
+      case 4:
+        return 'Wed';
+      case 5:
+        return 'Thu';
+      case 6:
+        return 'Fri';
+      case 7:
+        return 'Sat';
+      default:
+        return '';
+    }
+  }
+
+  Future<bool> isDateAvailable(DateTime date) async {
+    if (selectedHomestay.isNotEmpty && date != false) {
+      final availabilitySnapshot = await availabilityCollection
+          .doc(selectedHomestay)
+          .collection(formatDate(date))
+          .doc('availability')
+          .get();
+
+      bool isAvailable =
+          availabilitySnapshot.exists ? availabilitySnapshot['available'] ?? false : false;
+
+      if (!isAvailable) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('The date ${formatDate(date)} is not available for booking.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+
+      return isAvailable;
+    }
+
+    return true;
+  }
+
+  Future<void> checkAvailability() async {
+    if (selectedHomestay.isNotEmpty && checkInDate != null) {
+      final availabilitySnapshot = await availabilityCollection
+          .doc(selectedHomestay)
+          .collection(formatDate(checkInDate!))
+          .doc('availability')
+          .get();
+
+      setState(() {
+        isAvailable = availabilitySnapshot.exists ? availabilitySnapshot['available'] ?? false : false;
+      });
+    }
+  }
+
+  Future<void> updateAvailability() async {
+    if (selectedHomestay.isNotEmpty && checkInDate != null) {
+      await availabilityCollection
+          .doc(selectedHomestay)
+          .collection(formatDate(checkInDate!))
+          .doc('availability')
+          .set({'available': false});
+    }
   }
 }
