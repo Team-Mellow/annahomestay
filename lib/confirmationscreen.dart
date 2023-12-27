@@ -77,11 +77,16 @@ class ConfirmationScreen extends StatelessWidget {
 
                             // If the user confirms, delete the booking
                             if (confirm == true) {
-                              await _bookingRepository
-                                  .deleteBooking(latestBooking.id!);
+                              if (latestBooking.id != null) {
+                                await _bookingRepository
+                                    .deleteBooking(latestBooking.id!);
 
-                              // Close the confirmation screen
-                              Navigator.of(context).pop();
+                                // Close the confirmation screen
+                                Navigator.of(context).pop();
+                              } else {
+                                // Handle the case where the id is null
+                                print("Booking ID is null.");
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -102,8 +107,29 @@ class ConfirmationScreen extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            print("Booking Confirmed!");
+                          onPressed: () async {
+                            // Your existing code for processing the booking
+
+                            // Show a confirmation message
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Booking Confirmed"),
+                                content: Text(
+                                    "Your booking is successfully registered!"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                      Navigator.pushReplacementNamed(context,
+                                          '/list'); // Go to the list screen
+                                    },
+                                    child: Text("Go back to homepage"),
+                                  ),
+                                ],
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.indigo[900],

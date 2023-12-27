@@ -1,23 +1,30 @@
-// homestay_repository.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
 import 'homestay_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomestayRepository extends GetxController {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static HomestayRepository get instance => Get.find();
 
-  static HomestayRepository get instance => Get.put(HomestayRepository());
+  final _db = FirebaseFirestore.instance;
 
-  Future<List<HomestayModel>> getHomestays() async {
+  //fetch homestay details
+  Future<List<Homestay>> getAllHomestayDetails() async {
+    final snapshot = await _db.collection("Homestay2").get();
+    final homestayData =
+        snapshot.docs.map((e) => Homestay.fromSnapshot(e)).toList();
+    return homestayData;
+  }
+
+  Future<void> updateHomestay(Homestay updatedHomestay) async {
     try {
-      QuerySnapshot querySnapshot = await _db.collection('homestays').get();
-      return querySnapshot.docs
-          .map((doc) =>
-              HomestayModel.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
-    } catch (error) {
-      print('Error fetching homestays: $error');
-      return [];
+      await _db.collection('Homestay2').doc(updatedHomestay.id).update(
+            updatedHomestay.toJson(),
+          );
+    } on FirebaseException catch (e) {
+      throw e.message ?? 'Something went wrong.';
+    } catch (e) {
+      throw 'Something went wrong.';
     }
   }
 }
