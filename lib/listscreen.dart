@@ -58,25 +58,45 @@ class ListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: FutureBuilder<List<Homestay>>(
-        future: _homestayRepository.getAllHomestayDetails(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No homestay data available.');
-          } else {
-            List<Homestay> homestays = snapshot.data!;
-            return ListView.builder(
-              itemCount: homestays.length,
-              itemBuilder: (context, index) {
-                return HomestayRow(homestay: homestays[index]);
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'WELCOME TO ANNA HOMESTAY!',
+              style: TextStyle(
+                fontSize: 34.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.indigo[900],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Homestay>>(
+              future: _homestayRepository.getAllHomestayDetails(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No homestay data available.');
+                } else {
+                  List<Homestay> homestays = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: homestays.length,
+                    itemBuilder: (context, index) {
+                      return HomestayRow(homestay: homestays[index]);
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -110,7 +130,7 @@ class HomestayRow extends StatelessWidget {
                       ? Colors.blue[200]
                       : homestay.category == 'D'
                           ? Colors.purple[200]
-                          : Colors.green[200],
+                          : Colors.orange[700],
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             BoxShadow(
