@@ -13,6 +13,7 @@ class BookingModel {
   late String homestay;
   late DateTime? checkInDate;
   late DateTime? checkOutDate;
+  late String approval;
 
   String? id; // Add this line to include the id property
 
@@ -23,6 +24,7 @@ class BookingModel {
     required this.homestay,
     required this.checkInDate,
     required this.checkOutDate,
+    this.approval = 'pending',
     this.id,
   });
 
@@ -36,6 +38,8 @@ class BookingModel {
       checkInDate: (map['checkInDate'] as Timestamp?)?.toDate(),
       checkOutDate: (map['checkOutDate'] as Timestamp?)?.toDate(),
       id: map['id'], // Add this line to include the id property
+      approval: map['approval'] ??
+          'pending', //Include the aproval field with a default value
     );
   }
 
@@ -49,6 +53,7 @@ class BookingModel {
       'checkInDate': checkInDate,
       'checkOutDate': checkOutDate,
       'id': id, // Add this line to include the id property
+      'approval': approval, //Include the approval field
     };
   }
 }

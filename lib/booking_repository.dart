@@ -21,6 +21,10 @@ class BookingRepository extends GetxController {
 
       // Update the booking with the ID
       booking.id = bookingId;
+      booking.approval = 'pending';
+
+      //save the updated booking to Firestore
+      await documentReference.update({'approval': "pending"});
 
       // Display a success snackbar
       Get.snackbar(

@@ -8,13 +8,14 @@ class Homestay {
   final double price;
   final String imageUrl;
 
-  const Homestay(
-      {this.id,
-      required this.houseName,
-      required this.category,
-      required this.capacity,
-      required this.price,
-      required this.imageUrl});
+  const Homestay({
+    this.id,
+    required this.houseName,
+    required this.category,
+    required this.capacity,
+    required this.price,
+    required this.imageUrl,
+  });
 
   toJson() {
     return {
@@ -32,12 +33,13 @@ class Homestay {
     final data = document.data()!;
 
     return Homestay(
-        id: document.id,
-        houseName: data["HouseName"],
-        category: data["Category"],
-        capacity: data["Capacity"],
-        price: data["Price"],
-        imageUrl: data["ImageUrl"]);
+      id: document.id,
+      houseName: data["HouseName"],
+      category: data["Category"],
+      capacity: data["Capacity"],
+      price: data["Price"],
+      imageUrl: data["ImageUrl"],
+    );
   }
 
   // Create a Map for deletion

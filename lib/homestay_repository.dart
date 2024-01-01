@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomestayRepository extends GetxController {
-  static HomestayRepository get instance => Get.find();
+  static HomestayRepository get instance => Get.put(HomestayRepository());
 
   final _db = FirebaseFirestore.instance;
 
@@ -25,6 +25,18 @@ class HomestayRepository extends GetxController {
       throw e.message ?? 'Something went wrong.';
     } catch (e) {
       throw 'Something went wrong.';
+    }
+  }
+
+  // Fetch homestay names
+  Future<List<String>> fetchHomestayNames() async {
+    try {
+      final snapshot = await _db.collection("Homestay2").get();
+      final homestayNames =
+          snapshot.docs.map((e) => e.get('HouseName')).toList();
+      return homestayNames.cast<String>();
+    } catch (e) {
+      throw 'Error fetching homestay names: $e';
     }
   }
 }
