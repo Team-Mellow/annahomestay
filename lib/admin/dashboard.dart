@@ -48,7 +48,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                     style: ElevatedButton.styleFrom(
                         fixedSize: Size(200, 200),
-                        backgroundColor: Colors.deepPurple[200],
+                        backgroundColor: Colors.deepPurple[100],
                         elevation: 0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +78,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(200, 200),
                       backgroundColor:
-                          Colors.deepPurple[200], // Set the desired size
+                          Colors.deepPurple[100], // Set the desired size
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -126,9 +126,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Navigator.push(context, route);
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(200, 200), // Set the desired size
+                      fixedSize: Size(200, 200),
+                      backgroundColor:
+                          Colors.deepPurple[100], // Set the desired size
                     ),
-                    child: Text('Generate Reports'),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          '../lib/photos/graph.png',
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text('Generate Reports'),
+                      ],
+                    ),
                   ),
                 ),
               ],

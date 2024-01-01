@@ -14,6 +14,7 @@ dependencies:
   cloud_firestore: ^4.13.5
   get: ^4.6.6
   timestamp_to_string: ^0.0.1
+  group_button: ^5.3.3
 
 dev_dependencies:
   flutter_test:

@@ -10,6 +10,7 @@ class BookingController extends GetxController {
   final email = TextEditingController();
   final phone = TextEditingController();
   final homestay = TextEditingController();
+  final approval = TextEditingController();
 
   String selectedHomestay = '';
   DateTime? checkInDate;
@@ -28,6 +29,16 @@ class BookingController extends GetxController {
   Future<void> removeBooking(BookingModel booking) async {
     try {
       await bookingRepo.removeBooking(booking);
+      update();
+    } catch (e) {
+      throw 'Something went wrong';
+    }
+  }
+
+  Future<void> updateApproval(
+      BookingModel booking, String approvalValue) async {
+    try {
+      await bookingRepo.updateApproval(booking, approvalValue);
       update();
     } catch (e) {
       throw 'Something went wrong';

@@ -6,6 +6,8 @@ import 'package:annahomestay/custBooking.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
 import 'package:get/get.dart';
 
+final controller = Get.put(BookingController());
+
 class ManageBooking extends StatefulWidget {
   const ManageBooking({super.key});
 
@@ -14,6 +16,8 @@ class ManageBooking extends StatefulWidget {
 }
 
 class _ManageBookingState extends State<ManageBooking> {
+  //String approvalValue = 'Approved';
+
   // Custom method to format timestamp as ddmmyy
   String formatTimestamp(Timestamp timestamp) {
     DateTime dateTime = timestamp.toDate();
@@ -25,7 +29,6 @@ class _ManageBookingState extends State<ManageBooking> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BookingController());
     return Scaffold(
       appBar: AppBar(
         title: Text('Manage Customer Booking'),
@@ -66,6 +69,8 @@ class _ManageBookingState extends State<ManageBooking> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+
+                                        Text(snapshot.data![index].approval),
                                         SizedBox(height: 8.0),
                                         Text('Name: ' +
                                             snapshot.data![index].name),
@@ -93,9 +98,12 @@ class _ManageBookingState extends State<ManageBooking> {
                                 bottom: 16.0,
                                 right: 16.0,
                                 child: FloatingActionButton.extended(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.check),
-                                  label: const Text('Approve'),
+                                  onPressed: () {
+                                    handleApproval(
+                                        context, snapshot.data![index]);
+                                  },
+                                  //icon: const Icon(Icons.check),
+                                  label: const Text('Approval'),
                                 ),
                               ),
                             ],
@@ -112,4 +120,72 @@ class _ManageBookingState extends State<ManageBooking> {
       ),
     );
   }
+}
+
+class ApprovalDialog extends StatefulWidget {
+  final BookingModel booking;
+
+  ApprovalDialog({required this.booking});
+
+  @override
+  _ApprovalDialogState createState() => _ApprovalDialogState();
+}
+
+class _ApprovalDialogState extends State<ApprovalDialog> {
+  String? approvalValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Approval'),
+      content: Column(
+        children: [
+          RadioListTile(
+            title: const Text('Approve'),
+            value: 'Approved',
+            groupValue: approvalValue,
+            onChanged: (value) {
+              setState(() {
+                approvalValue = value as String;
+              });
+            },
+          ),
+          RadioListTile(
+            title: const Text('Not Approve'),
+            value: 'Not Approved',
+            groupValue: approvalValue,
+            onChanged: (value) {
+              setState(() {
+                approvalValue = value as String;
+              });
+            },
+          ),
+        ],
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            // Handle the approval decision
+            if (approvalValue != null) {
+              controller.updateApproval(widget.booking, approvalValue!);
+              Navigator.of(context).pop();
+              setState(() {});
+            } else {
+              // Show a message indicating that a choice must be made
+            }
+          },
+          child: Text('Submit'),
+        ),
+      ],
+    );
+  }
+}
+
+void handleApproval(BuildContext context, BookingModel booking) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return ApprovalDialog(booking: booking);
+    },
+  );
 }

@@ -39,8 +39,22 @@ class BookingRepository extends GetxController {
   // Remove booking in Firestore
   Future<void> removeBooking(BookingModel booking) async {
     try {
-      final homestayRef = _db.collection('bookings').doc(booking.id);
-      await homestayRef.delete();
+      final bookingRef = _db.collection('bookings').doc(booking.id);
+      await bookingRef.delete();
+    } catch (e) {
+      throw 'Something went wrong';
+    }
+  }
+
+  Future<void> updateApproval(
+      BookingModel booking, String approvalValue) async {
+    try {
+      final bookingRef = _db.collection('bookings').doc(booking.id);
+
+      await bookingRef.update({
+        'approval': approvalValue,
+        // Add any other fields you want to update here
+      });
     } catch (e) {
       throw 'Something went wrong';
     }

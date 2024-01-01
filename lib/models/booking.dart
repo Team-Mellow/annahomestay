@@ -8,6 +8,7 @@ class BookingModel {
   final String homestay;
   final Timestamp checkInDate;
   final Timestamp checkOutDate;
+  final String approval;
 
   const BookingModel({
     this.id,
@@ -17,6 +18,7 @@ class BookingModel {
     required this.homestay,
     required this.checkInDate,
     required this.checkOutDate,
+    required this.approval,
   });
 
   toJson() {
@@ -27,6 +29,7 @@ class BookingModel {
       "homestay": homestay,
       "checkInDate": checkInDate,
       "checkOutDate": checkOutDate,
+      "approval": approval,
     };
   }
 
@@ -42,7 +45,8 @@ class BookingModel {
         phone: data["phone"],
         homestay: data["homestay"],
         checkInDate: data["checkInDate"],
-        checkOutDate: data["checkOutDate"]);
+        checkOutDate: data["checkOutDate"],
+        approval: data['approval']);
   }
 
   // Create a Map for deletion
