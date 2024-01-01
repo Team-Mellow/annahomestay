@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'listscreen.dart';
 import 'bookingscreen.dart';
 import 'confirmationscreen.dart';
+import 'descriptionscreen.dart';
 import 'package:get/get.dart';
 import 'booking_repository.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/list': (context) => ListScreen(),
         '/booking': (context) => BookingScreen(),
         '/confirmation': (context) => ConfirmationScreen(),
+        '/description': (context) => DescriptionScreen(),
       },
     );
   }

@@ -41,11 +41,13 @@ class ConfirmationScreen extends StatelessWidget {
                         'Phone Number', latestBooking.phone, Icons.phone),
                     buildInfoTile(
                         'Homestay Chosen', latestBooking.homestay, Icons.home),
-                    buildInfoTile('Date Check-in', formatDate(DateTime.now()),
+                    buildInfoTile(
+                        'Date Check-in',
+                        formatDate(latestBooking.checkInDate!),
                         Icons.calendar_today),
                     buildInfoTile(
                         'Date Check-out',
-                        formatDate(DateTime.now().add(Duration(days: 6))),
+                        formatDate(latestBooking.checkOutDate!),
                         Icons.calendar_today),
                     SizedBox(height: 20.0),
                     Row(

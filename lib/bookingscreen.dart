@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'homestay_repository.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -24,6 +25,29 @@ class _BookingScreenState extends State<BookingScreen> {
   String selectedHomestay = '';
   DateTime? checkInDate;
   DateTime? checkOutDate;
+
+  List<String> homestayNames = []; //List to store homestay names
+
+  @override
+  void initState() {
+    super.initState();
+    //Fetch homestay names when the screen initializes
+    fetchHomestayNames();
+  }
+
+  //Fetch homestay names and update the state
+  void fetchHomestayNames() async {
+    try {
+      List<String> names =
+          await HomestayRepository.instance.fetchHomestayNames();
+      setState(() {
+        homestayNames = names;
+      });
+    } catch (e) {
+      print('Error fetching homestay names: $e');
+      //Handle the error accordingly
+    }
+  }
 
   Future<void> _saveBookingDataToFirestore() async {
     try {
@@ -122,13 +146,7 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
               Column(
                 children: [
-                  for (var homestay in [
-                    'Angsana House',
-                    'Apsara Villa',
-                    'Chenang Stay',
-                    'Indah Home',
-                    'Dini Pavi'
-                  ])
+                  for (var homestay in homestayNames)
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       padding: EdgeInsets.all(12.0),
@@ -243,6 +261,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     'homestay': selectedHomestay,
                     'checkInDate': checkInDate,
                     'checkOutDate': checkOutDate,
+                    'approval': 'pending',
                   };
 
                   // Add the booking to Firestore

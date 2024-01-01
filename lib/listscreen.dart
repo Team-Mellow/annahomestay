@@ -91,7 +91,11 @@ class HomestayRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("Homestay ${homestay.houseName} clicked");
+        Navigator.pushNamed(
+          context,
+          '/description',
+          arguments: homestay,
+        );
       },
       child: Container(
         margin: const EdgeInsets.all(8.0),
