@@ -64,14 +64,34 @@ class ListScreen extends StatelessWidget {
           Container(
             color: Colors.white,
             padding: EdgeInsets.all(16.0),
-            child: Text(
-              'WELCOME TO ANNA HOMESTAY!',
-              style: TextStyle(
-                fontSize: 34.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.indigo[900],
-              ),
-              textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                Text(
+                  'WELCOME TO ANNA HOMESTAY!',
+                  style: TextStyle(
+                    fontSize: 34.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo[900],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.0),
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.indigo[50],
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                    'Discover the art of hospitality in every corner of comfort – where cherished memories are crafted, and moments become stories. Welcome to a homestay experience beyond the ordinary, where the warmth of home meets the adventure of travel.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.indigo[900],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
