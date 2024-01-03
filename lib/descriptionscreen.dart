@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'homestay_model.dart';
+import 'bookingscreen.dart';
 
 class DescriptionScreen extends StatelessWidget {
   @override
@@ -43,6 +44,26 @@ class DescriptionScreen extends StatelessWidget {
             DetailsCard(
                 label: 'Price', value: '\RM${homestay.price.toString()}'),
             // Add more details as needed
+
+            // Book Homestay Button
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BookingScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.indigo[900],
+                onPrimary: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: Text('Book Homestay'),
+            ),
           ],
         ),
       ),

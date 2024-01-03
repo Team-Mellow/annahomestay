@@ -42,7 +42,7 @@ class ListScreen extends StatelessWidget {
         actions: [
           TextButton(
             style: TextButton.styleFrom(
-              primary: Colors.orange[700],
+              primary: Colors.orange[300],
               backgroundColor: Colors.indigo[900],
             ),
             onPressed: () {
@@ -77,8 +77,14 @@ class ListScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 Container(
+                  //Applying gradient
                   padding: EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Colors.indigo.shade50, Colors.indigo.shade200],
+                    ),
                     color: Colors.indigo[50],
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -87,7 +93,7 @@ class ListScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: Colors.indigo[900],
+                      color: Colors.indigo[500],
                     ),
                   ),
                 ),
@@ -122,52 +128,64 @@ class ListScreen extends StatelessWidget {
   }
 }
 
-class HomestayRow extends StatelessWidget {
+class HomestayRow extends StatefulWidget {
   final Homestay homestay;
 
   HomestayRow({required this.homestay});
 
   @override
+  _HomestayRowState createState() => _HomestayRowState();
+}
+
+class _HomestayRowState extends State<HomestayRow> {
+  bool isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          '/description',
-          arguments: homestay,
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.all(8.0),
-        width: 200,
-        height: 160,
-        decoration: BoxDecoration(
-          color: homestay.category == 'A'
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            '/description',
+            arguments: widget.homestay,
+          );
+        },
+        child: Card(
+          elevation: isHovered ? 8.0 : 2.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          color: widget.homestay.category == 'A'
               ? Colors.red[200]
-              : homestay.category == 'B'
+              : widget.homestay.category == 'B'
                   ? Colors.orange[200]
-                  : homestay.category == 'C'
+                  : widget.homestay.category == 'C'
                       ? Colors.blue[200]
-                      : homestay.category == 'D'
+                      : widget.homestay.category == 'D'
                           ? Colors.purple[200]
-                          : Colors.orange[700],
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            homestay.houseName,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+                          : isHovered
+                              ? Colors.indigo[300]
+                              : Colors.indigo[200],
+          child: Container(
+            width: 200,
+            height: 100,
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: AnimatedDefaultTextStyle(
+                duration: Duration(milliseconds: 200),
+                style: TextStyle(
+                  fontSize: isHovered ? 20.0 : 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                child: Text(
+                  widget.homestay.houseName,
+                ),
+              ),
             ),
           ),
         ),
