@@ -4,18 +4,32 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=3.1.3 <4.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
+  cloud_firestore: ^4.13.6
+  firebase_core: ^2.24.2
+  firebase_storage: ^11.5.6
   flutter:
     sdk: flutter
-    
-  animated_theme_switcher: ^2.0.1-nullsafety.0
+  image_picker: ^1.0.5
+  # Add other Firebase dependencies as needed, e.g., firebase_auth
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  get: ^4.6.6
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
+
+assets:
+  - resources/anna-homestay.jpeg
+  - resources/homestay1.jpg
+  - resources/homestay2.jpg
+  - resources/homestay3.jpg
+  - resources/homestay4.jpg
+  - resources/homestay5.jpg
+  - resources/icon.png
+  - splash.png
