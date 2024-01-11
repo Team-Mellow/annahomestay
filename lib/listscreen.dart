@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'booking_model.dart';
+import 'booking_repository.dart';
 import 'homestay_repository.dart';
 import 'homestay_model.dart';
 import 'bookingstatus.dart';
 
 class ListScreen extends StatelessWidget {
   final HomestayRepository _homestayRepository = HomestayRepository.instance;
+  final BookingRepository _bookingRepository = BookingRepository.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -118,18 +121,26 @@ class ListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BookingStatusPage(
-                      fullName: 'John Doe', // Replace with actual full name
-                      homestayName:
-                          'Angsana House', // Replace with actual homestay name
-                      status: 'Confirmed', // Replace with actual booking status
+              onPressed: () async {
+                // Fetch the actual booking details from Firestore
+                List<BookingModel> bookings =
+                    await _bookingRepository.getBookings().first;
+
+                if (bookings.isNotEmpty) {
+                  // Pass the first booking details to the BookingStatusPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookingStatusPage(
+                        booking: bookings.first,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  // Handle the case where no booking data is available
+                  // You can show a snackbar or navigate to an error page
+                  print('No booking data available.');
+                }
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.indigo[900],

@@ -64,7 +64,7 @@ class BookingRepository extends GetxController {
     }
   }
 
-  // Retrieve bookings from Firestore
+  // Inside your BookingRepository class
   Stream<List<BookingModel>> getBookings() {
     return bookingsCollection.snapshots().map(
           (snapshot) => snapshot.docs
