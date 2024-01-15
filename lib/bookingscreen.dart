@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'homestay_repository.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingScreen extends StatefulWidget {
   @override
@@ -26,16 +24,16 @@ class _BookingScreenState extends State<BookingScreen> {
   DateTime? checkInDate;
   DateTime? checkOutDate;
 
-  List<String> homestayNames = []; //List to store homestay names
+  List<String> homestayNames = []; // List to store homestay names
 
   @override
   void initState() {
     super.initState();
-    //Fetch homestay names when the screen initializes
+    // Fetch homestay names when the screen initializes
     fetchHomestayNames();
   }
 
-  //Fetch homestay names and update the state
+  // Fetch homestay names and update the state
   void fetchHomestayNames() async {
     try {
       List<String> names =
@@ -45,28 +43,6 @@ class _BookingScreenState extends State<BookingScreen> {
       });
     } catch (e) {
       print('Error fetching homestay names: $e');
-      //Handle the error accordingly
-    }
-  }
-
-  Future<void> _saveBookingDataToFirestore() async {
-    try {
-      // Save booking data to Firestore
-      await FirebaseFirestore.instance.collection('bookings').add({
-        'name': nameController.text,
-        'email': emailController.text,
-        'phone': mobileController.text,
-        'homestay': selectedHomestay,
-        'checkInDate': checkInDate,
-        'checkOutDate': checkOutDate,
-        'timestamp': FieldValue.serverTimestamp(), // Add this line
-        'keycode': '',
-      });
-
-      // Navigate to ConfirmationScreen
-      Navigator.pushNamed(context, '/confirmation');
-    } catch (error) {
-      print('Error saving booking data: $error');
       // Handle the error accordingly
     }
   }
@@ -244,35 +220,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
               // "Next" button
               ElevatedButton(
-                onPressed: () async {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  );
-
-                  // Create a map with booking information
-                  Map<String, dynamic> bookingData = {
-                    'name': nameController.text,
-                    'email': emailController.text,
-                    'phone': mobileController.text,
-                    'homestay': selectedHomestay,
-                    'checkInDate': checkInDate,
-                    'checkOutDate': checkOutDate,
-                    'approval': 'pending',
-                    'keycode': '',
-                  };
-
-                  // Add the booking to Firestore
-                  await bookingsCollection.add(bookingData);
-
-                  // Dismiss the loading indicator
-                  Navigator.pop(context);
-
-                  // Navigate to the confirmation page with user input
+                onPressed: () {
+                  // Navigate to ConfirmationScreen without inserting into Firestore
                   Navigator.pushNamed(
                     context,
                     '/confirmation',
@@ -283,7 +232,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       'homestay': selectedHomestay,
                       'checkInDate': checkInDate,
                       'checkOutDate': checkOutDate,
-                      'id': null, //Set initial ID as null
+                      'id': null, // Set initial ID as null
                     },
                   );
                 },

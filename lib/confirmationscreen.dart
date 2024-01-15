@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'booking_model.dart';
 import 'booking_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final BookingRepository _bookingRepository = BookingRepository.instance;
@@ -16,6 +17,12 @@ class ConfirmationScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     String? bookingId = bookingData['id'] ?? null; // Use null if 'id' is null
+    String name = bookingData['name'];
+    String email = bookingData['email'];
+    String phone = bookingData['phone'];
+    String homestay = bookingData['homestay'];
+    DateTime? checkInDate = bookingData['checkInDate'];
+    DateTime? checkOutDate = bookingData['checkOutDate'];
 
     return Scaffold(
       appBar: AppBar(
@@ -63,17 +70,10 @@ class ConfirmationScreen extends StatelessWidget {
                             onPressed: () async {
                               Navigator.of(context).pop(true);
 
-                              // If the user confirms, delete the booking
-                              if (bookingId != null) {
-                                await _bookingRepository
-                                    .deleteBooking(bookingId);
+                              // Handle cancellation logic here if needed
 
-                                // Close the confirmation screen
-                                Navigator.of(context).pop();
-                              } else {
-                                // Handle the case where the id is null
-                                print("Booking ID is null.");
-                              }
+                              // Close the confirmation screen
+                              Navigator.of(context).pop();
                             },
                             child: Text("Yes"),
                           ),
@@ -81,18 +81,11 @@ class ConfirmationScreen extends StatelessWidget {
                       ),
                     );
 
-                    // If the user confirms, delete the booking
-                    if (confirm == true) {
-                      if (bookingData['id'] != null) {
-                        await _bookingRepository
-                            .deleteBooking(bookingData['id']);
+                    // Handle cancellation logic here if needed
 
-                        // Close the confirmation screen
-                        Navigator.of(context).pop();
-                      } else {
-                        // Handle the case where the id is null
-                        print("Booking ID is null.");
-                      }
+                    // If the user confirms, navigate back to BookingScreen
+                    if (confirm == true) {
+                      Navigator.of(context).pop();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -113,21 +106,39 @@ class ConfirmationScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
+                    Navigator.of(context).pop(); // Close the dialog
+
+                    Map<String, dynamic> bookingData = {
+                      'name': name,
+                      'email': email,
+                      'phone': phone,
+                      'homestay': homestay,
+                      'checkInDate': checkInDate,
+                      'checkOutDate': checkOutDate,
+                      'approval': 'pending',
+                      'keycode': '',
+                    };
+
+                    await FirebaseFirestore.instance
+                        .collection('bookings')
+                        .add(bookingData);
+
                     // Show a confirmation message
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text("Booking Confirmed"),
-                        content:
-                            Text("Your booking is successfully registered!"),
+                        content: Text("Your booking is now registered!"),
                         actions: [
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).pop(); // Close the dialog
-                              Navigator.pushReplacementNamed(
-                                  context, '/list'); // Go to the list screen
+                              Navigator.of(context).pop();
+                              Navigator.pushReplacementNamed(context, '/list');
                             },
-                            child: Text("Go back to homepage"),
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.indigo[900]),
+                            child: Text("Home",
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
