@@ -22,6 +22,7 @@ class BookingModel {
   });
 
   toJson() {
+    //string JSON to parsed JSON, come from backend response (firebase)
     return {
       "name": name,
       "email": email,
@@ -51,6 +52,7 @@ class BookingModel {
 
   // Create a Map for deletion
   Map<String, dynamic> toDeleteMap() {
+    //from object Homestay convert to string (using MAP) JSON
     return {"name": FieldValue.delete()};
   }
 }

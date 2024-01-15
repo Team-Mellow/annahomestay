@@ -2,6 +2,7 @@ import 'package:annahomestay/admin/dashboard.dart';
 import 'package:annahomestay/loginPage/signup.dart';
 import 'package:annahomestay/loginPage/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'mainpage.dart';
@@ -23,6 +24,8 @@ Future main() async {
             projectId: "annahomestay-ea338"));
   }
   await Firebase.initializeApp();
+  //final storage = FirebaseStorage.instanceFor(bucket: "gs://annahomestay-ea338.appspot.com");
+
   runApp(const MainApp());
 }
 

@@ -49,8 +49,30 @@ class _ManageBookingState extends State<ManageBooking> {
                       shrinkWrap: true,
                       itemCount: snapshot.data!.length,
                       itemBuilder: (c, index) {
+                        // Sorting order: 'pending', 'Approved', 'Not Approved'
+                        snapshot.data!.sort((a, b) {
+                          if (a.approval == 'pending') {
+                            return -1; // 'pending' comes first
+                          } else if (b.approval == 'pending') {
+                            return 1;
+                          } else if (a.approval == 'Approved') {
+                            return -1; // 'Approved' comes next
+                          } else if (b.approval == 'Approved') {
+                            return 1;
+                          } else {
+                            return 0; // 'Not Approved' comes last
+                          }
+                        });
+                        Color? cardColor = snapshot.data![index].approval ==
+                                'pending'
+                            ? Colors.red[200]
+                            : snapshot.data![index].approval == 'Approved'
+                                ? Colors.green[200]
+                                : Colors
+                                    .white; // Default color if neither Approved nor Not Approved
                         return SizedBox(
                             child: Card(
+                          color: cardColor,
                           margin: EdgeInsets.all(8.0),
                           child: Stack(
                             children: [
@@ -70,7 +92,24 @@ class _ManageBookingState extends State<ManageBooking> {
                                           ),
                                         ),
 
-                                        Text(snapshot.data![index].approval),
+                                        Text(
+                                          snapshot.data![index].approval,
+                                          style: TextStyle(
+                                            color: snapshot.data![index]
+                                                        .approval ==
+                                                    'Not Approved'
+                                                ? Colors.blue
+                                                : snapshot.data![index]
+                                                            .approval ==
+                                                        'Approved'
+                                                    ? Colors.green
+                                                    : snapshot.data![index]
+                                                                .approval ==
+                                                            'pending'
+                                                        ? Colors.red
+                                                        : null,
+                                          ),
+                                        ),
                                         SizedBox(height: 8.0),
                                         Text('Name: ' +
                                             snapshot.data![index].name),

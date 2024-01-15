@@ -3,8 +3,8 @@ import 'package:annahomestay/repository/homestay_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HomestayController extends GetxController {
-  static HomestayController get instance => Get.find();
+class HomestayController2 extends GetxController {
+  static HomestayController2 get instance => Get.find();
   //final homestayRepository = HomestayRepository.instance;
 
   String? id;
@@ -25,7 +25,7 @@ class HomestayController extends GetxController {
     update();
   }
 
-  getAllHomestayDetails() {
+  Stream<List<Homestay>> getAllHomestayDetailsStream() {
     return homestayRepo.getAllHomestayDetails();
   }
 

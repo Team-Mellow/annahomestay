@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:annahomestay/controller/manageProperty_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:annahomestay/models/homestay.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ManageProperty extends StatefulWidget {
   const ManageProperty({Key? key}) : super(key: key);
@@ -11,6 +16,31 @@ class ManageProperty extends StatefulWidget {
 }
 
 class _ManagePropertyState extends State<ManageProperty> {
+  final CollectionReference _items =
+      FirebaseFirestore.instance.collection('homestay2');
+
+  List<String> imageUrls = [];
+
+  Future<void> uploadImageAndAddUrl(File file) async {
+    String fileName = DateTime.now().microsecondsSinceEpoch.toString();
+
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirecImages = referenceRoot.child('images');
+    Reference referenceImageToUpload = referenceDirecImages.child(fileName);
+
+    try {
+      await referenceImageToUpload.putFile(file);
+      var url = await referenceImageToUpload.getDownloadURL();
+
+      setState(() {
+        imageUrls.add(url);
+      });
+    } catch (error) {
+      // Handle error
+      print(error.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomestayController());
@@ -21,7 +51,7 @@ class _ManagePropertyState extends State<ManageProperty> {
         elevation: 0,
         actions: [
           IconButton(
-              onPressed: () {
+              onPressed: () async {
                 AlertDialog alertDialog = AlertDialog(
                   title: const Text('Add Homestay'),
                   content: Column(
@@ -50,6 +80,46 @@ class _ManagePropertyState extends State<ManageProperty> {
                         decoration:
                             const InputDecoration(labelText: 'Image URL'),
                       ),
+                      Center(
+                        child: IconButton(
+                            onPressed: () async {
+                              final file = await ImagePicker()
+                                  .pickImage(source: ImageSource.gallery);
+                              if (file == null) {
+                                return;
+                              }
+                              String fileName = DateTime.now()
+                                  .microsecondsSinceEpoch
+                                  .toString();
+
+                              Reference referenceRoot =
+                                  FirebaseStorage.instance.ref();
+
+                              Reference referenceDirecImages =
+                                  referenceRoot.child('images');
+
+                              Reference referenceImageToUpload =
+                                  referenceDirecImages.child(fileName);
+
+                              try {
+                                // Upload image in the background without freezing the UI
+                                Future.delayed(Duration.zero, () async {
+                                  await referenceImageToUpload
+                                      .putFile(File(file.path));
+                                  var url = await referenceImageToUpload
+                                      .getDownloadURL();
+
+                                  setState(() {
+                                    imageUrls.add(url);
+                                  });
+                                });
+                              } catch (error) {
+                                // Handle error
+                                print(error.toString());
+                              }
+                            },
+                            icon: const Icon(Icons.camera_alt)),
+                      ),
                     ],
                   ),
                   actions: [
@@ -60,7 +130,7 @@ class _ManagePropertyState extends State<ManageProperty> {
                       child: const Text('Cancel'),
                     ),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         // Validate and add homestay to the list
                         if (controller.name.text.isNotEmpty &&
                             controller.capacity.text.isNotEmpty &&
@@ -113,8 +183,10 @@ class _ManagePropertyState extends State<ManageProperty> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               //mainAxisSize: MainAxisSize.min,
                               children: [
-                                Image.asset(
-                                  snapshot.data![index].imageUrl,
+                                Image.network(
+                                  imageUrls.isNotEmpty
+                                      ? imageUrls[index]
+                                      : snapshot.data![index].imageUrl,
                                   width: double.infinity,
                                   height: 200,
                                   fit: BoxFit.cover,
@@ -147,12 +219,43 @@ class _ManagePropertyState extends State<ManageProperty> {
                                         children: [
                                           TextButton(
                                             onPressed: () {
-                                              // setState(() {
-                                              //   final homestay =
-                                              //       snapshot.data![index];
-                                              //   controller
-                                              //       .removeHomestay(homestay);
-                                              // });
+                                              // Create a new instance of the controller for the 'Edit Homestay' dialog
+                                              HomestayController
+                                                  editController =
+                                                  HomestayController();
+
+                                              // Set initial values from the selected homestay
+                                              editController.id =
+                                                  snapshot.data![index].id;
+                                              editController.name.text =
+                                                  snapshot
+                                                      .data![index].houseName;
+                                              editController.capacity.text =
+                                                  snapshot.data![index].capacity
+                                                      .toString();
+                                              editController.category.text =
+                                                  snapshot
+                                                      .data![index].category;
+                                              editController.price.text =
+                                                  snapshot.data![index].price
+                                                      .toString();
+                                              editController.imageUrl.text =
+                                                  snapshot
+                                                      .data![index].imageUrl;
+
+                                              Homestay homestay = Homestay(
+                                                  id: snapshot.data![index].id,
+                                                  houseName: snapshot
+                                                      .data![index].houseName,
+                                                  category: snapshot
+                                                      .data![index].category,
+                                                  capacity: snapshot
+                                                      .data![index].capacity,
+                                                  price: snapshot
+                                                      .data![index].price,
+                                                  imageUrl: snapshot
+                                                      .data![index].imageUrl);
+
                                               AlertDialog alertDialog =
                                                   AlertDialog(
                                                 title:
@@ -161,33 +264,23 @@ class _ManagePropertyState extends State<ManageProperty> {
                                                   children: [
                                                     TextField(
                                                       controller:
-                                                          TextEditingController(
-                                                              text: snapshot
-                                                                  .data![index]
-                                                                  .houseName),
+                                                          editController.name,
                                                       decoration:
                                                           const InputDecoration(
                                                               labelText:
                                                                   'House Name'),
                                                     ),
                                                     TextField(
-                                                      controller:
-                                                          TextEditingController(
-                                                              text: snapshot
-                                                                  .data![index]
-                                                                  .capacity
-                                                                  .toString()),
+                                                      controller: editController
+                                                          .capacity,
                                                       decoration:
                                                           const InputDecoration(
                                                               labelText:
                                                                   'Capacity'),
                                                     ),
                                                     TextField(
-                                                      controller:
-                                                          TextEditingController(
-                                                              text: snapshot
-                                                                  .data![index]
-                                                                  .category),
+                                                      controller: editController
+                                                          .category,
                                                       decoration:
                                                           const InputDecoration(
                                                               labelText:
@@ -195,26 +288,80 @@ class _ManagePropertyState extends State<ManageProperty> {
                                                     ),
                                                     TextField(
                                                       controller:
-                                                          TextEditingController(
-                                                              text: snapshot
-                                                                  .data![index]
-                                                                  .price
-                                                                  .toString()),
+                                                          editController.price,
                                                       decoration:
                                                           const InputDecoration(
                                                               labelText:
                                                                   'Price'),
                                                     ),
                                                     TextField(
-                                                      controller:
-                                                          TextEditingController(
-                                                              text: snapshot
-                                                                  .data![index]
-                                                                  .imageUrl),
+                                                      controller: editController
+                                                          .imageUrl,
                                                       decoration:
                                                           const InputDecoration(
                                                               labelText:
                                                                   'Image URL'),
+                                                    ),
+                                                    Center(
+                                                      child: IconButton(
+                                                          onPressed: () async {
+                                                            final file =
+                                                                await ImagePicker()
+                                                                    .pickImage(
+                                                                        source:
+                                                                            ImageSource.gallery);
+                                                            if (file == null) {
+                                                              return;
+                                                            }
+                                                            String fileName =
+                                                                DateTime.now()
+                                                                    .microsecondsSinceEpoch
+                                                                    .toString();
+
+                                                            Reference
+                                                                referenceRoot =
+                                                                FirebaseStorage
+                                                                    .instance
+                                                                    .ref();
+
+                                                            Reference
+                                                                referenceDirecImages =
+                                                                referenceRoot
+                                                                    .child(
+                                                                        'images');
+
+                                                            Reference
+                                                                referenceImageToUpload =
+                                                                referenceDirecImages
+                                                                    .child(
+                                                                        fileName);
+
+                                                            try {
+                                                              // Upload image in the background without freezing the UI
+                                                              Future.delayed(
+                                                                  Duration.zero,
+                                                                  () async {
+                                                                await referenceImageToUpload
+                                                                    .putFile(
+                                                                        File(file
+                                                                            .path));
+                                                                var url =
+                                                                    await referenceImageToUpload
+                                                                        .getDownloadURL();
+
+                                                                setState(() {
+                                                                  imageUrls
+                                                                      .add(url);
+                                                                });
+                                                              });
+                                                            } catch (error) {
+                                                              // Handle error
+                                                              print(error
+                                                                  .toString());
+                                                            }
+                                                          },
+                                                          icon: const Icon(Icons
+                                                              .camera_alt)),
                                                     ),
                                                   ],
                                                 ),
@@ -229,43 +376,52 @@ class _ManagePropertyState extends State<ManageProperty> {
                                                   TextButton(
                                                     onPressed: () {
                                                       // Validate and update homestay in the list
-                                                      if (controller.name
+                                                      if (editController.name
                                                               .text.isNotEmpty &&
-                                                          controller.capacity.text
+                                                          editController
+                                                              .capacity.text.isNotEmpty &&
+                                                          editController.category
+                                                              .text.isNotEmpty &&
+                                                          editController
+                                                              .price
+                                                              .text
                                                               .isNotEmpty &&
-                                                          controller.category.text
-                                                              .isNotEmpty &&
-                                                          controller.price.text
-                                                              .isNotEmpty &&
-                                                          controller
+                                                          editController
                                                               .imageUrl
                                                               .text
                                                               .isNotEmpty) {
+                                                        // uploadIma
                                                         setState(() {
-                                                          final homestay =
+                                                          final updatedHomestay =
                                                               Homestay(
                                                             houseName:
-                                                                controller
+                                                                editController
                                                                     .name.text
                                                                     .trim(),
-                                                            category: controller
-                                                                .category.text
-                                                                .trim(),
+                                                            category:
+                                                                editController
+                                                                    .category
+                                                                    .text
+                                                                    .trim(),
                                                             capacity: int.parse(
-                                                                controller
+                                                                editController
                                                                     .capacity
                                                                     .text),
                                                             price: double.parse(
-                                                                controller.price
+                                                                editController
+                                                                    .price
                                                                     .text),
-                                                            imageUrl: controller
-                                                                .imageUrl.text
-                                                                .trim(),
+                                                            imageUrl:
+                                                                editController
+                                                                    .imageUrl
+                                                                    .text
+                                                                    .trim(),
                                                           );
 
                                                           // Assuming you have a method to update homestay in the controller
                                                           controller
                                                               .updateHomestay(
+                                                                  updatedHomestay,
                                                                   homestay);
                                                         });
                                                         Navigator.pop(

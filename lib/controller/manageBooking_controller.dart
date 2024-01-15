@@ -18,6 +18,10 @@ class BookingController extends GetxController {
 
   final bookingRepo = Get.put(BookingRepository());
 
+  Future<int> getTotalBookingCount() async {
+    return bookingRepo.getTotalBookingCount();
+  }
+
   Future<void> createBooking(BookingModel booking) async {
     await bookingRepo.createBooking(booking);
   }

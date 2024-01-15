@@ -28,6 +28,18 @@ class BookingRepository extends GetxController {
     });
   }
 
+  Future<int> getTotalBookingCount() async {
+    try {
+      // Assuming you are using Firebase Firestore
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('bookings').get();
+      return snapshot.size;
+    } catch (e) {
+      print('Error fetching total property count: $e');
+      throw 'Something went wrong';
+    }
+  }
+
   //fetch booking details
   Future<List<BookingModel>> getAllBookingDetails() async {
     final snapshot = await _db.collection("bookings").get();
