@@ -24,7 +24,10 @@ class BookingRepository extends GetxController {
       booking.approval = 'pending';
 
       //save the updated booking to Firestore
-      await documentReference.update({'approval': "pending"});
+      await documentReference.update({
+        'approval': "pending",
+        'keycode': '',
+      });
 
       // Display a success snackbar
       Get.snackbar(
@@ -45,8 +48,10 @@ class BookingRepository extends GetxController {
   }
 
 // Delete a booking from Firestore
+  // Inside your BookingRepository class
   Future<void> deleteBooking(String bookingId) async {
     try {
+      print("Deleting booking with ID: $bookingId");
       await bookingsCollection.doc(bookingId).delete();
       Get.snackbar(
         "Success",
@@ -55,12 +60,13 @@ class BookingRepository extends GetxController {
         backgroundColor: Colors.indigo[900],
         colorText: Colors.white,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
       Get.snackbar("Error", "Something went wrong, try again",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red[400],
           colorText: Colors.white);
       print("ERROR - $error");
+      print("STACK TRACE - $stackTrace");
     }
   }
 

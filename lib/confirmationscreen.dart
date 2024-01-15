@@ -15,6 +15,8 @@ class ConfirmationScreen extends StatelessWidget {
     Map<String, dynamic> bookingData =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
+    String? bookingId = bookingData['id'] ?? null; // Use null if 'id' is null
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,7 +48,6 @@ class ConfirmationScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    // Show a confirmation dialog
                     bool confirm = await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -59,7 +60,21 @@ class ConfirmationScreen extends StatelessWidget {
                             child: Text("No"),
                           ),
                           TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
+                            onPressed: () async {
+                              Navigator.of(context).pop(true);
+
+                              // If the user confirms, delete the booking
+                              if (bookingId != null) {
+                                await _bookingRepository
+                                    .deleteBooking(bookingId);
+
+                                // Close the confirmation screen
+                                Navigator.of(context).pop();
+                              } else {
+                                // Handle the case where the id is null
+                                print("Booking ID is null.");
+                              }
+                            },
                             child: Text("Yes"),
                           ),
                         ],

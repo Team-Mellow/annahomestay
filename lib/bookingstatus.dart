@@ -60,6 +60,8 @@ class BookingStatusPage extends StatelessWidget {
                                     Text('Homestay Name: ${booking.homestay}'),
                                     SizedBox(height: 8.0),
                                     Text('Status: ${booking.approval}'),
+                                    SizedBox(height: 8.0),
+                                    Text('Keycode: ${booking.keycode}'),
                                     // Add other fields here, such as phone number, email, date, etc.
                                   ],
                                 ),

@@ -60,6 +60,7 @@ class _BookingScreenState extends State<BookingScreen> {
         'checkInDate': checkInDate,
         'checkOutDate': checkOutDate,
         'timestamp': FieldValue.serverTimestamp(), // Add this line
+        'keycode': '',
       });
 
       // Navigate to ConfirmationScreen
@@ -262,6 +263,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     'checkInDate': checkInDate,
                     'checkOutDate': checkOutDate,
                     'approval': 'pending',
+                    'keycode': '',
                   };
 
                   // Add the booking to Firestore
@@ -281,6 +283,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       'homestay': selectedHomestay,
                       'checkInDate': checkInDate,
                       'checkOutDate': checkOutDate,
+                      'id': null, //Set initial ID as null
                     },
                   );
                 },

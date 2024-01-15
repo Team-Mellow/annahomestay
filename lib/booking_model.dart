@@ -14,6 +14,7 @@ class BookingModel {
   late DateTime? checkInDate;
   late DateTime? checkOutDate;
   late String approval;
+  late String keycode;
 
   String? id; // Add this line to include the id property
 
@@ -26,6 +27,7 @@ class BookingModel {
     required this.checkOutDate,
     this.approval = 'pending',
     this.id,
+    this.keycode = '',
   });
 
   // Create a factory method to convert a Map to a BookingModel
@@ -40,6 +42,7 @@ class BookingModel {
       id: map['id'], // Add this line to include the id property
       approval: map['approval'] ??
           'pending', //Include the aproval field with a default value
+      keycode: map['keycode'] ?? '', // Include the "keycode" field
     );
   }
 
@@ -54,6 +57,7 @@ class BookingModel {
       'checkOutDate': checkOutDate,
       'id': id, // Add this line to include the id property
       'approval': approval, //Include the approval field
+      'keycode': keycode //Include te "Keycode" field
     };
   }
 }
