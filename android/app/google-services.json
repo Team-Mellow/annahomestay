@@ -12,7 +12,20 @@
           "package_name": "com.example.annahomestay"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "425277120843-psrdr34j19t61q55gi9mb885op56itoe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.annahomestay",
+            "certificate_hash": "06618e0dcfccf99c84d3e412b85a5dd2829621c0"
+          }
+        },
+        {
+          "client_id": "425277120843-8o9igq3agvr9kof659b9t5g5glgdah16.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAh2ZTakhcdRWIWYxTZjTa4-u1y6c754Wc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "425277120843-8o9igq3agvr9kof659b9t5g5glgdah16.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "425277120843-52oasb7ansqssu9et2si992lfskeu06p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.annahomestay"
+              }
+            }
+          ]
         }
       }
     }
