@@ -11,9 +11,17 @@ dependencies:
   firebase_core: ^2.24.0
   flutter:
     sdk: flutter
+  flutter_stripe: ^10.0.0
+  flutter_paypal_checkout: ^1.0.1
+  flutter_stripe_payment: ^0.0.18
+  fluttertoast: ^8.2.4
   google_sign_in: ^6.2.1
   google_sign_in_web: ^0.12.3+1
 firebase_core: ^2.24.0
+http: ^0.13.3
+flutter_dotenv: ^5.1.0
+
+
 
 dev_dependencies:
   flutter_test:

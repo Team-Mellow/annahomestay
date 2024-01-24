@@ -1,4 +1,4 @@
-import 'package:annahomestay/mainpage.dart';
+import 'package:annahomestay/paymentScreen.dart';
 import 'package:annahomestay/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,20 +12,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _LoginPageState extends State<LoginPage> {
   Future<FirebaseApp> _initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (user != null) {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) =>
-                          MainPage())); //tukar path pergi admin dashboard ama
+                          LoginPage())); //tukar path pergi admin dashboard ama
                 }
               },
               child: const Text(

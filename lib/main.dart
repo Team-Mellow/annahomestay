@@ -3,16 +3,14 @@ import 'package:annahomestay/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'mainpage.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'paymentScreen.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   Firebase.initializeApp();
-//   runApp(const SignupPage());
-// }
-
-Future main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Stripe.publishableKey =
+  //     "pk_test_51OSXWiIvbkIA9TsRLG51JJv3aXAV3gLIYaak2VShii8Ji84BLjJArJoDdiMPcUZNCKDh7RumdJi1RBmE56FpABEY00P8U6aBZr";
+
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: FirebaseOptions(
@@ -21,7 +19,9 @@ Future main() async {
             messagingSenderId: "425277120843",
             projectId: "annahomestay-ea338"));
   }
+
   await Firebase.initializeApp();
+
   runApp(const MainApp());
 }
 
@@ -31,7 +31,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(), //nanti tukar balik jadi SignUpPage()
+      home: //PaymentScreen(),
+          LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
