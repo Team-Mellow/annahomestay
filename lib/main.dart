@@ -1,4 +1,5 @@
 import 'package:annahomestay/admin/dashboard.dart';
+import 'package:annahomestay/firebase_options.dart';
 import 'package:annahomestay/loginPage/signup.dart';
 import 'package:annahomestay/loginPage/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,15 +16,16 @@ import 'mainpage.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyCJd8beOBOV1U5Dnx-S3XwooYVOxY9KSe4",
-            appId: "1:425277120843:web:6d9cbdcc261924acd608ce",
-            messagingSenderId: "425277120843",
-            projectId: "annahomestay-ea338"));
-  }
-  await Firebase.initializeApp();
+  // if (kIsWeb) {
+  //   await Firebase.initializeApp(
+  //       options: FirebaseOptions(
+  //           apiKey: "AIzaSyCJd8beOBOV1U5Dnx-S3XwooYVOxY9KSe4",
+  //           appId: "1:425277120843:web:6d9cbdcc261924acd608ce",
+  //           messagingSenderId: "425277120843",
+  //           projectId: "annahomestay-ea338"));
+  // }
+  // await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //final storage = FirebaseStorage.instanceFor(bucket: "gs://annahomestay-ea338.appspot.com");
 
   runApp(const MainApp());
