@@ -11,6 +11,54 @@ class BookingRepository extends GetxController {
   CollectionReference bookingsCollection =
       FirebaseFirestore.instance.collection('bookings');
 
+  Future<Map<String, Map<String, dynamic>>> checkAvailabilityForEachHouse(
+      Timestamp checkIn, Timestamp checkOut) async {
+    Map<String, Map<String, dynamic>> availability = {};
+
+    // Get all homestays and initialize them as available
+    var homestaysSnapshot =
+        await FirebaseFirestore.instance.collection('Homestay2').get();
+    for (var homestayDoc in homestaysSnapshot.docs) {
+      var homestayData = homestayDoc.data() as Map<String, dynamic>;
+      String? homestayName = homestayData['HouseName'];
+      if (homestayName != null) {
+        availability[homestayName] = {
+          'Available': true,
+          'Price': homestayData['Price'],
+          'Capacity': homestayData['Capacity']
+        };
+      }
+    }
+
+    // Get all bookings and update availability if there is an overlap
+    var bookingsSnapshot =
+        await FirebaseFirestore.instance.collection('bookings').get();
+    for (var bookingDoc in bookingsSnapshot.docs) {
+      var bookingData = bookingDoc.data() as Map<String, dynamic>;
+      String? homestayName = bookingData['homestay'];
+
+      if (homestayName == null || !availability.containsKey(homestayName)) {
+        continue; // Skip if the homestay name is null or not in the availability map
+      }
+
+      Timestamp bookingCheckIn = bookingData['checkInDate'];
+      Timestamp bookingCheckOut = bookingData['checkOutDate'];
+
+      // Check if the booking overlaps with the input date range
+      bool isOverlapping =
+          checkIn.toDate().isBefore(bookingCheckOut.toDate()) &&
+              checkOut.toDate().isAfter(bookingCheckIn.toDate());
+
+      // If there is an overlap, set the homestay as unavailable
+      if (isOverlapping) {
+        availability[homestayName]!['Available'] =
+            false; // Use ! to assert that the key exists
+      }
+    }
+
+    return availability;
+  }
+
   // Save booking data to Firestore
   Future<void> createBooking(BookingModel booking) async {
     try {

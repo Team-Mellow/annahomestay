@@ -116,6 +116,24 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
               SizedBox(height: 16.0),
 
+              /*// button to navigate to availability screen
+      ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AvailabilityScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.indigo[900],
+                ),
+                child: Text(
+                  'Check Homestay Availability',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 16.0), */
+
               // Homestay selection
               Text(
                 'Select Homestay:',
